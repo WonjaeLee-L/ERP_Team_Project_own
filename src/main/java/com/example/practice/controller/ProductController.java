@@ -287,6 +287,7 @@ public class ProductController {
         productVO.setCompany_code(company_code);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValueAsString(productVO);
+        System.out.println(productVO.toString());
 //        System.out.println(objectMapper.writeValueAsString(productVO));
 //        objectMapper.writeValueAsString(productVO);
 //        ModelAndView mv = new ModelAndView();

@@ -334,8 +334,17 @@
 
     .search-wrap .search-form input:focus {
         outline: none;
+
+    }
+    input[type=text], input[type=number] {
+        box-shadow: 0 0 3px black;
     }
 
+    #modModalNum, #modModalCategory {
+        box-shadow: 0 0 3px red;
+        cursor: not-allowed;
+
+    }
     .search-wrap .search-form button {
         border: none;
         background: transparent;
@@ -606,70 +615,70 @@
     </div>
 
     <!-- 기존 상품 수정 모달 -->
-<!--    <div class="modal" id="myModal2">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
+    <!--    <div class="modal" id="myModal2">-->
+    <!--        <div class="modal-dialog">-->
+    <!--            <div class="modal-content">-->
 
-<!--                <div class="modal-header">-->
-<!--                    <h4 class="modal-title" style="margin-left: 30px">기존 상품 수정 ???</h4>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
-<!--                </div>-->
+    <!--                <div class="modal-header">-->
+    <!--                    <h4 class="modal-title" style="margin-left: 30px">기존 상품 수정 ???</h4>-->
+    <!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+    <!--                </div>-->
 
-<!--                <form method="post" action="product" enctype="multipart/form-data">-->
-<!--                    <div class="modal-body">-->
+    <!--                <form method="post" action="product" enctype="multipart/form-data">-->
+    <!--                    <div class="modal-body">-->
 
-<!--                        <div class="col-md-3">-->
-<!--                            <label for="modCode" class="form-label">상품코드</label>-->
-<!--                            <input type="text" class="form-control" id="modCode" name="product_code">-->
-<!--                        </div>-->
-<!--                        <div class="col-md-5">-->
-<!--                            <label for="modProduct" class="form-label">상품명</label>-->
-<!--                            <input type="text" class="form-control" id="modProduct" name="product_name">-->
-<!--                        </div>-->
-<!--                        <div class="col-md-5">-->
-<!--                            <label for="modSale" class="form-label">판매가</label>-->
-<!--                            <input type="text" class="form-control" id="modSale" name="sale_price">-->
-<!--                        </div>-->
-<!--                        <div class="col-md-5">-->
-<!--                            <label for="modPrice" class="form-label">가격</label>-->
-<!--                            <input type="text" class="form-control" id="modPrice" name="price">-->
-<!--                        </div>-->
-<!--                        <div class="col-12">-->
-<!--                            <label for="modCategory" class="form-label">카테고리코드</label>-->
-<!--                            <input type="text" class="form-control" id="modCategory" name="category_code">-->
-<!--                        </div>-->
-<!--                        <div class="col-12">-->
-<!--                            <label for="modImg" class="form-label">이미지</label>-->
-<!--                            <input type="text" class="form-control" id="modImg" name="product_img">-->
-<!--                        </div>-->
-<!--                        <div class="col-12">-->
-<!--                            <label for="modExplain" class="form-label">설명</label>-->
-<!--                            <input type="text" class="form-control" id="modExplain" name="product_explain">-->
-<!--                        </div>-->
-<!--                        <div class="col-md-3">-->
-<!--                            <label for="modCompanyCode" class="form-label">회사코드</label>-->
-<!--                            <input type="text" class="form-control" id="modCompanyCode" name="company_code">-->
-<!--                        </div>-->
-<!--                        <label class="form-label">파일 업로드</label>-->
-<!--                        <div class="fileBox">-->
-<!--                            <label for="upFile">-->
-<!--                                <input class="uploadFile" value="upFile" placeholder="file">-->
-<!--                            </label>-->
-<!--                            <label for="upFile"></label>-->
-<!--                            <input type="file" name="product_img" id="upFile">-->
-<!--                        </div>-->
+    <!--                        <div class="col-md-3">-->
+    <!--                            <label for="modCode" class="form-label">상품코드</label>-->
+    <!--                            <input type="text" class="form-control" id="modCode" name="product_code">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-md-5">-->
+    <!--                            <label for="modProduct" class="form-label">상품명</label>-->
+    <!--                            <input type="text" class="form-control" id="modProduct" name="product_name">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-md-5">-->
+    <!--                            <label for="modSale" class="form-label">판매가</label>-->
+    <!--                            <input type="text" class="form-control" id="modSale" name="sale_price">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-md-5">-->
+    <!--                            <label for="modPrice" class="form-label">가격</label>-->
+    <!--                            <input type="text" class="form-control" id="modPrice" name="price">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-12">-->
+    <!--                            <label for="modCategory" class="form-label">카테고리코드</label>-->
+    <!--                            <input type="text" class="form-control" id="modCategory" name="category_code">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-12">-->
+    <!--                            <label for="modImg" class="form-label">이미지</label>-->
+    <!--                            <input type="text" class="form-control" id="modImg" name="product_img">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-12">-->
+    <!--                            <label for="modExplain" class="form-label">설명</label>-->
+    <!--                            <input type="text" class="form-control" id="modExplain" name="product_explain">-->
+    <!--                        </div>-->
+    <!--                        <div class="col-md-3">-->
+    <!--                            <label for="modCompanyCode" class="form-label">회사코드</label>-->
+    <!--                            <input type="text" class="form-control" id="modCompanyCode" name="company_code">-->
+    <!--                        </div>-->
+    <!--                        <label class="form-label">파일 업로드</label>-->
+    <!--                        <div class="fileBox">-->
+    <!--                            <label for="upFile">-->
+    <!--                                <input class="uploadFile" value="upFile" placeholder="file">-->
+    <!--                            </label>-->
+    <!--                            <label for="upFile"></label>-->
+    <!--                            <input type="file" name="product_img" id="upFile">-->
+    <!--                        </div>-->
 
-<!--                    </div>-->
+    <!--                    </div>-->
 
-<!--                    <div class="modal-footer">-->
-<!--                        <input type="submit" class="modalbtn" value="물품 등록"></input>-->
-<!--                        <button type="button" class="modalbtn" data-bs-dismiss="modal">Close</button>-->
-<!--                    </div>-->
-<!--                </form>-->
+    <!--                    <div class="modal-footer">-->
+    <!--                        <input type="submit" class="modalbtn" value="물품 등록"></input>-->
+    <!--                        <button type="button" class="modalbtn" data-bs-dismiss="modal">Close</button>-->
+    <!--                    </div>-->
+    <!--                </form>-->
 
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <!-- 수정 모달 -->
     <div class="modal" id="tableModal">
@@ -715,7 +724,7 @@
                             <input type="text" class="form-control" id="modModalCompanyCode" name="company_code">
                         </div>
 
-                        <label for="productFile">찾기</label>
+                        <label for="productFile" >찾기</label>
                         <input type="file" id="modModalFile" name="file" value="file">
                     </div>
                     <div class="modal-footer">
@@ -1175,24 +1184,30 @@
             var product_img = td.eq(6).text();
             var product_explain = td.eq(7).text();
             var company_code = td.eq(8).text();
+            var inputFile = document.querySelector('#inputFile');
+            // var file = inputFile.files[0];
 
             formData.append("num", parseInt(num));
             formData.append("product_code", product_code);
             formData.append("product_name", name);
             formData.append("sale_price", parseInt(sale_price));
             formData.append("price", parseInt(price));
-            // formData.append("file", $("#fileInput")[0].files[0]);));
+            // formData.append("file", file);
             formData.append("category_code", category_code);
             formData.append("product_explain", product_explain);
             formData.append("company_code", company_code);
-            $("#ex1_Result2").html(product_code + "" + parseInt(price));
+            // $("#ex1_Result2").html(product_code + "" + parseInt(price));
             $.ajax({
-                url: 'productlistview1',
+                url: 'modProductInfo',
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function (data) {
+                success: function (response) {
+                    // var xhr = new XMLHttpRequest();
+                    // xhr.open('POST', '/productlistview1', true);
+                    // xhr.send(formData);
+                    // console.log(data);
                     $('#tableModal #modModalNum').val(formData.get("num"));
                     $('#tableModal #modModalCode').val(formData.get("product_code"));
                     $('#tableModal #modModalProductName').val(formData.get("product_name"));
@@ -1201,6 +1216,7 @@
                     $('#tableModal #modModalCategory').val(formData.get("category_code").trim());
                     $('#tableModal #modModalExplain').val(formData.get("sale_price"));
                     $('#tableModal #modModalCompanyCode').val(formData.get("company_code"));
+                    // $('#tableModal #modModalImg').val(formData.get("file"));
 
                     $('#tableModal').show(); // 모달 열기
                 },
