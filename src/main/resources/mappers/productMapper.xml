@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.practice.repository.IF_ProductDao">
+    <select id="selectAll" resultType="com.example.practice.vo.ProductVO">
+        select t.* from (select sub.*, rownum as rnum from (select * from product order by num DESC) sub)
+                            t where rnum between #{startNo} and #{endNo}
+    </select>
+    <select id="productCount" resultType="int">
+        select count(*) from PRODUCT
+    </select>
+    <insert id="insertProduct" parameterType="com.example.practice.vo.ProductVO">
+        insert into product
+        values (#{product_code}, #{product_name}, #{sale_price}, #{price}, #{category_code}, #{product_img},
+                #{product_explain}, #{company_code}, pro_seq.nextval)
+    </insert>
+<!--    문자열 포함 검색. 다중 결과-->
+    <select id="selectProduct" parameterType="String" resultType="com.example.practice.vo.ProductVO">
+        select *
+        from PRODUCT
+        where PRODUCT_NAME like concat('%', concat(#{search}, '%'))
+    </select>
+
+<!--    정확히 일치하는 경우 검색-->
+    <select id="selectCategory" parameterType="String" resultType="com.example.practice.vo.ProductVO">
+        select * from PRODUCT where CATEGORY_CODE = #{oneSearch}
+    </select>
+
+    <delete id="deleteProduct" parameterType="com.example.practice.vo.ProductVO">
+        delete product
+        where product_code = #{delcode}
+    </delete>
+
+    <update id="updateProduct" parameterType="com.example.practice.vo.ProductVO">
+        update PRODUCT
+        set SALE_PRICE      = #{sale_price},
+            PRICE           = #{price},
+            PRODUCT_CODE = #{product_code},
+            PRODUCT_EXPLAIN = #{product_explain},
+            PRODUCT_NAME = #{product_name}
+        where NUM = #{num}
+    </update>
+</mapper>
+
+
