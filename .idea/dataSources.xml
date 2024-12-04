@@ -14,5 +14,16 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="oracle-service" uuid="e430c0e5-9755-4d72-8636-bce18dcb3d6d">
+      <imported>true</imported>
+      <configured-by-url>true</configured-by-url>
+      <remarks>$PROJECT_DIR$/src/main/resources/application.properties</remarks>
+      <jdbc-driver>oracle.jdbc.driver.OracleDriver</jdbc-driver>
+      <jdbc-url>jdbc:oracle:thin:@//localhost:1521</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

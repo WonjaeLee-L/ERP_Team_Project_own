@@ -15,16 +15,31 @@
         values (#{product_code}, #{product_name}, #{sale_price}, #{price}, #{category_code}, #{product_img},
                 #{product_explain}, #{company_code}, pro_seq.nextval)
     </insert>
-<!--    문자열 포함 검색. 다중 결과-->
+<!--    검색창 검색 // 여러 조건 (이름, 가격, 코드) 문자열 포함 검색. 다중 결과 // 가격은 정확. 코드와 이름은 포함으로-->
     <select id="selectProduct" parameterType="String" resultType="com.example.practice.vo.ProductVO">
         select *
         from PRODUCT
-        where PRODUCT_NAME like concat('%', concat(#{search}, '%'))
+        <where>
+            <if test="product_name != null">
+                product_name like concat('%', concat(#{product_name}, '%'))
+            </if>
+            <if test="sale_price != null">
+                AND sale_price = #{sale_price}
+            </if>
+            <if test="category_code != null">
+                AND category_code like concat('%', concat(#{category_code}, '%'))
+            </if>
+        </where>
     </select>
-
-<!--    정확히 일치하는 경우 검색-->
+<!--String product_name, String sale_price, String category_code-->
+<!--    category select // 전체 선택시, 전체도 적용하도록 함-->
     <select id="selectCategory" parameterType="String" resultType="com.example.practice.vo.ProductVO">
-        select * from PRODUCT where CATEGORY_CODE = #{oneSearch}
+        select * from PRODUCT
+        <where>
+            <if test = "oneSearch != 'all'">
+                CATEGORY_CODE = #{oneSearch}
+            </if>
+        </where>
     </select>
 
     <delete id="deleteProduct" parameterType="com.example.practice.vo.ProductVO">
@@ -37,6 +52,7 @@
         set SALE_PRICE      = #{sale_price},
             PRICE           = #{price},
             PRODUCT_CODE = #{product_code},
+            PRODUCT_IMG = #{product_img},
             PRODUCT_EXPLAIN = #{product_explain},
             PRODUCT_NAME = #{product_name}
         where NUM = #{num}

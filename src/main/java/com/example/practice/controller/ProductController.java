@@ -58,49 +58,69 @@ public class ProductController {
     // 물품 등록 ok
     //, required = false
     @PostMapping("/product")
-    public String product(@ModelAttribute ProductVO productVO, @RequestParam(value = "file") MultipartFile file, InputStream inputStream, HttpServletResponse response) throws Exception {
+    public String product(@ModelAttribute ProductVO productVO, @RequestParam(value = "file") MultipartFile file) throws Exception {
+
         try {
-//        if (file.isEmpty()) {
-//            System.out.println("null");
-//        }else {
-//            System.out.println("체크");
-//        }
-            String saveFileName = productFile.saveFile(file);
-            productVO.setProduct_img(saveFileName);
-            productservice.insertProduct(productVO);
-            System.out.println(saveFileName + "savefileName");
-            System.out.println(productVO.getProduct_img() + "product_img");
-            String sub = saveFileName;
-            if (saveFileName.length() > 70) {
-                sub = saveFileName.substring(69);
+            if (!file.isEmpty()) {
+                String saveFileName = productFile.saveFile(file);
+                productVO.setProduct_img(saveFileName);
+            } else {
+                if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+                    productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+                }
             }
-            System.out.println(sub + "sub");
-            Long subLong = Long.parseLong(sub);
-            inputStream = new FileInputStream(new File(productVO.getProduct_img()));
-
-            response.setContentType("image/jpeg");
-            showImage(subLong, response, inputStream);
-
-//            return "redirect:productlistview";
-
+            productservice.insertProduct(productVO);
         } catch (NumberFormatException e) {
-
+            // 오류 처리
         }
         return "redirect:productlistview";
     }
 
-    @ResponseBody
-    @GetMapping("/productImg/{product_img}")
-    public UrlResource showImage(@PathVariable("product_img") Long img, HttpServletResponse response, InputStream inputStream) throws IOException {
+    //        try {
+//
+//            if (file.isEmpty()) {
+//                if(productVO.getProduct_img()==null) {
+//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//                }
+//            } else {
+//                String saveFileName = productFile.saveFile(file);
+//                productVO.setProduct_img(saveFileName);
+//            }
+//            productservice.insertProduct(productVO);
+//            System.out.println(saveFileName + "savefileName");
+//            System.out.println(productVO.getProduct_img() + "product_img");
+//            String sub = saveFileName;
+//            if (saveFileName.length() > 70) {
+//                sub = saveFileName.substring(69);
+//            }
+//            System.out.println(sub + "sub");
+//            Long subLong = Long.parseLong(sub);
+//            inputStream = new FileInputStream(new File(productVO.getProduct_img()));
+//
+//            response.setContentType("image/jpeg");
+//            showImage(subLong, response, inputStream);
 
-//        img = URLDecoder.decode(img, "UTF-8");
-        response.setContentType("image/jpeg");
-        InputStream i = new ByteArrayInputStream("product_img".getBytes());
-        IOUtils.copy(i, response.getOutputStream());
+//            return "redirect:productlistview";
 
-        return new UrlResource("file:" + "product_img");
-//        return new UrlResource("file:"+ img);
-    }
+//        } catch (NumberFormatException e) {
+//
+//        }
+//        return "redirect:productlistview";
+//    }
+
+//    @ResponseBody
+//    @GetMapping("/productImg/{product_img}")
+//    public UrlResource showImage(@PathVariable("product_img") Long img, HttpServletResponse response, InputStream inputStream) throws IOException {
+//
+////        img = URLDecoder.decode(img, "UTF-8");
+//        response.setContentType("image/jpeg");
+//        InputStream i = new ByteArrayInputStream("product_img".getBytes());
+//        IOUtils.copy(i, response.getOutputStream());
+//
+//        return new UrlResource("file:" + "product_img");
+
+    /// /        return new UrlResource("file:"+ img);
+//    }
 
 //    @GetMapping
 
@@ -169,15 +189,19 @@ public class ProductController {
         productPageVO.setTotalCount(productservice.totalproductcount());
 
         List<ProductVO> productlist = productservice.selectAll(productPageVO);
-        //        System.out.println(productVO.getProduct_img());
-//            model.addAttribute("productlist", productlist);
-//            model.addAttribute("productPageVO", productPageVO);
+
+        // 디버깅 및 기본 이미지 설정
+        for (ProductVO product : productlist) {
+            System.out.println("Product Img: " + product.getProduct_img());
+            if (product.getProduct_img() == null || product.getProduct_img().isEmpty()) {
+                product.setProduct_img("/static/productImg/default/defaultImage.png");
+            }
+        }
+
         ModelAndView mv = new ModelAndView();
         mv.addObject("productPageVO", productPageVO);
         mv.addObject("productlist", productlist);
-
         mv.setViewName("MainProduct");
-
         return mv;
     }
 
@@ -200,14 +224,20 @@ public class ProductController {
 
     // 물품 검색, 이름 다중 검색
     @GetMapping("/productoneview")
-    public String productOneView(@RequestParam("search1") String product_name, Model model, @ModelAttribute ProductVO productVO) throws Exception {
-        List<ProductVO> productVOS = productservice.selectProduct(product_name);
+    public String productOneView(@RequestParam("search") String product_name, @RequestParam("search1") String product_price, @RequestParam("search2") String category_code, @ModelAttribute ProductVO productVO, Model model) throws Exception {
+        List<ProductVO> productVOS = productservice.selectProduct(product_name, product_price, category_code);
         System.out.println("확인: " + product_name);
         model.addAttribute("productVOS", productVOS);
         // 입력 안하고 검색하면, 전체 리스트 호출
         if (productVOS.isEmpty()) {
             return "redirect:productlistview";
         }
+
+
+        for (ProductVO productVO1 : productVOS) {
+            System.out.println(productVO1.toString());
+        };
+
         return "MainProduct";
     }
 
@@ -254,10 +284,7 @@ public class ProductController {
         Map<String, Object> response = new HashMap<>();
 
         List<ProductVO> productVO = productservice.selectCategory(category_code);
-//        if (productVO == null) {
-//            response.put("error", "제품 정보를 찾을 수 없습니다.");
-//            return response;
-//        }
+
 
         ProductPageVO productPageVO = new ProductPageVO();
         productPageVO.setStartPage(1);
@@ -287,21 +314,104 @@ public class ProductController {
         productVO.setCompany_code(company_code);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValueAsString(productVO);
-        System.out.println(productVO.toString());
-//        System.out.println(objectMapper.writeValueAsString(productVO));
-//        objectMapper.writeValueAsString(productVO);
-//        ModelAndView mv = new ModelAndView();
-//        mv.addObject("productVO", productVO);
-//        mv.setViewName("MainProduct");
-//        return mv;
-//        return "MainProduct";
-//        return "modProductInfo";
-    }
-    // 새로 입력 받은 내용 수정
-    @PostMapping("/modProductInfo")
-    public String productMod(@ModelAttribute ProductVO productVO) throws Exception {
-        productservice.updateProduct(productVO);
-        return "redirect:productlistview";
+//        System.out.println(productVO.toString());
+
     }
 
-}
+
+    // 새로 입력 받은 내용 수정
+//    @PostMapping("/modProductInfo")
+//    public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+//        if (file != null && !file.isEmpty()) {
+//            String saveFileName = productFile.saveFile(file);
+//            if (saveFileName != null) {
+//                productVO.setProduct_img(saveFileName);
+//            }
+//        } else {
+//            // 사용자에게 입력을 받지 않았을 때만 기본 이미지 설정
+//            if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//            }
+//        }
+
+
+        //        if (file != null && !file.isEmpty()) {
+//            String saveFileName = productFile.saveFile(file);
+//            if(saveFileName!=null) {
+//            productVO.setProduct_img(saveFileName);
+//            } else {
+//                if(productVO.getProduct_img()==null){
+//                    productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//                }
+//            }
+//        }
+//        if (file != null && !file.isEmpty()) {
+//            String filePath = productFile.saveFile(file);
+//            if (filePath != null) {
+//                productVO.setProduct_img(filePath);
+//            }
+//        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+//            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//        }
+//        if (file != null && !file.isEmpty()) {
+//            String absolutePath = productFile.saveFile(file);
+//            if (absolutePath != null) {
+//                String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+//                productVO.setProduct_img(relativePath);
+//            }
+//        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+//            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//        }
+//        productservice.updateProduct(productVO);
+//        return "redirect:productlistview";
+//    }
+//}
+        @PostMapping("/modProductInfo")
+        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+
+        System.out.println(productVO.toString());
+
+
+            if (file != null && !file.isEmpty()) {
+                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
+                String existingImgPath = productVO.getProduct_img();
+                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
+                    // 파일 삭제 로직 추가
+                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+
+                String absolutePath = productFile.saveFile(file);
+                if (absolutePath != null) {
+                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+                    productVO.setProduct_img(relativePath);
+                }
+            }
+            productservice.updateProduct(productVO);
+            return "redirect:productlistview";
+        }}
+
+//        if (file == null || file.isEmpty()) {
+// 파일이 없는 경우. defaultImage를 저장한다.
+//            if (productVO.getProduct_img() != null) {
+//                productVO.setProduct_img(productVO.getProduct_img());
+//            } else {
+//            String defaultDir = "C:/Data/aa/projectSample-master/src/main/resources/static/productImg/default/";
+//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+//            File defaultFile = productFile.getFile(defaultDir, "defaultImage.png");
+//            ProductFile file1 = new ProductFile();
+//            file1.saveFile(defaultFile);
+//            }
+//
+//        } else {
+//            // 새것 저장
+//            String saveFileName = productFile.saveFile(file);
+//            productVO.setProduct_img(saveFileName);
+//        }
+
+//        productservice.updateProduct(productVO);
+//        return "redirect:productlistview";
+
+

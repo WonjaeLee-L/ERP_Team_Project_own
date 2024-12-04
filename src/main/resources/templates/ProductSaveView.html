@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 기존 상품 수정 모달 -->
+<!--    <div class="modal" id="myModal2">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+
+<!--                <div class="modal-header">-->
+<!--                    <h4 class="modal-title" style="margin-left: 30px">기존 상품 수정 ???</h4>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+
+<!--                <form method="post" action="product" enctype="multipart/form-data">-->
+<!--                    <div class="modal-body">-->
+
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="modCode" class="form-label">상품코드</label>-->
+<!--                            <input type="text" class="form-control" id="modCode" name="product_code">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="modProduct" class="form-label">상품명</label>-->
+<!--                            <input type="text" class="form-control" id="modProduct" name="product_name">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="modSale" class="form-label">판매가</label>-->
+<!--                            <input type="text" class="form-control" id="modSale" name="sale_price">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="modPrice" class="form-label">가격</label>-->
+<!--                            <input type="text" class="form-control" id="modPrice" name="price">-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="modCategory" class="form-label">카테고리코드</label>-->
+<!--                            <input type="text" class="form-control" id="modCategory" name="category_code">-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="modImg" class="form-label">이미지</label>-->
+<!--                            <input type="text" class="form-control" id="modImg" name="product_img">-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="modExplain" class="form-label">설명</label>-->
+<!--                            <input type="text" class="form-control" id="modExplain" name="product_explain">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="modCompanyCode" class="form-label">회사코드</label>-->
+<!--                            <input type="text" class="form-control" id="modCompanyCode" name="company_code">-->
+<!--                        </div>-->
+<!--                        <label class="form-label">파일 업로드</label>-->
+<!--                        <div class="fileBox">-->
+<!--                            <label for="upFile">-->
+<!--                                <input class="uploadFile" value="upFile" placeholder="file">-->
+<!--                            </label>-->
+<!--                            <label for="upFile"></label>-->
+<!--                            <input type="file" name="product_img" id="upFile">-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                    <div class="modal-footer">-->
+<!--                        <input type="submit" class="modalbtn" value="물품 등록"></input>-->
+<!--                        <button type="button" class="modalbtn" data-bs-dismiss="modal">Close</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!-- 수정 모달 -->
+<!--    <div class="modal" id="tableModal">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h4 class="modal-title" style="margin-left: 30px">수정 상품 모달 check</h4>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                </div>-->
+
+<!--                <form method="post" action="modProductInfo" enctype="multipart/form-data">-->
+<!--                    <div class="modal-body">-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="inputCode" class="form-label">상품번호</label>-->
+<!--                            <input type="text" class="form-control" id="modModalNum" name="num" readonly>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="inputCode" class="form-label">상품코드</label>-->
+<!--                            <input type="text" class="form-control" id="modModalCode" name="product_code">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="inputProduct" class="form-label">상품명</label>-->
+<!--                            <input type="text" class="form-control" id="modModalProductName" name="product_name">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="inputSale" class="form-label">판매가</label>-->
+<!--                            <input type="number" class="form-control" id="modModalSalePrice" name="sale_price">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-5">-->
+<!--                            <label for="inputPrice" class="form-label">가격</label>-->
+<!--                            <input type="number" class="form-control" id="modModalPrice" name="price">-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="inputCategory" class="form-label">카테고리코드</label>-->
+<!--                            <input type="text" class="form-control" id="modModalCategory" name="category_code" readonly>-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="inputExplain" class="form-label">설명</label>-->
+<!--                            <input type="text" class="form-control" id="modModalExplain" name="product_explain">-->
+<!--                        </div>-->
+<!--                        <div class="col-md-3">-->
+<!--                            <label for="inputCompanyCode" class="form-label">회사코드</label>-->
+<!--                            <input type="text" class="form-control" id="modModalCompanyCode" name="company_code">-->
+<!--                        </div>-->
+<!--                        <div class="modModalImg2">-->
+<!--                            <img id="modModalImg" src="" alt="" style="width: 100px; height: 100px;">-->
+<!--                        </div>-->
+<!--                        <label for="productFile" >찾기</label>-->
+<!--                        <input type="file" id="modModalFile" name="file" value="file">-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <input type="submit" class="modalbtn" value="물품 수정" id="modProduct"></input>-->
+<!--                        <button type="button" class="modalbtn" data-bs-dismiss="modal" id="exitModal">Close</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+
+
+
+
+
+</body>
+<script>
+    // var num = td.eq(0).text();
+    // var product_code = td.eq(1).text();
+    // var name = td.eq(2).text();
+    // var sale_price = td.eq(3).text();
+    // var price = td.eq(4).text();
+    // var category_code = td.eq(5).text();
+    // var product_explain = td.eq(7).text();
+    // var company_code = td.eq(8).text();
+    // var inputFile = document.querySelector('#inputFile');
+    // var file = inputFile.files[0];
+    // for (var pair of formData.entries()) {
+    //     console.log(pair[0]+ ', ' + pair[1]);
+    // }
+
+    // product_img = td.eq(6).text().trim();
+    // console.log("이미지 파일명. trim:", product_img); // 콘솔로 파일명 확인
+
+    // var imageUrl = 'productImg/' + product_img;
+    // console.log("이미지 URL:", imageUrl); // URL을 콘솔에 출력
+
+    // $('#modModalImg').attr('src', imageUrl).on('error', function() {
+    //     console.error("이미지를 로드할 수 없습니다:", imageUrl);
+    //     $(this).attr('src', 'defaultImage.png'); // 오류 시 기본 이미지
+    // }).show();
+
+
+    // formData.append("num", parseInt(num));
+    // formData.append("product_code", product_code);
+    // formData.append("product_name", name);
+    // formData.append("sale_price", parseInt(sale_price));
+    // formData.append("price", parseInt(price));
+    // // formData.append("file", file);
+    // formData.append("category_code", category_code);
+    // formData.append("product_explain", product_explain);
+    // formData.append("company_code", company_code);
+//**************************************************************************
+    //     doubleSubmit = false;
+    // }
+
+    // $.ajax({
+    //     url: 'modProductInfo',
+    //     type: 'POST',
+    //     data: formData,
+    //     contentType: false,
+    //     // 문자열 변환 x
+    //     processData: false,
+    //     // 새로 추가 확인 필요
+    //     // enctype: 'multipart/form-data',
+    //     // dataType: 'json',
+    //     success: function (response) {
+    //         console.log("응답 성공:", response);
+
+
+    // $('#tableModal #modModalNum').val(formData.get("num"));
+    // $('#tableModal #modModalCode').val(formData.get("product_code"));
+    // $('#tableModal #modModalProductName').val(formData.get("product_name"));
+    // $('#tableModal #modModalSalePrice').val(formData.get("sale_price"));
+    // $('#tableModal #modModalPrice').val(formData.get("price"));
+    // $('#tableModal #modModalCategory').val(formData.get("category_code").trim());
+    // $('#tableModal #modModalExplain').val(formData.get("sale_price"));
+    // $('#tableModal #modModalCompanyCode').val(formData.get("company_code"));
+
+
+    // $('#tableModal #modModalImg').val(formData.get("file"));
+    // $('#modModalFile').on('change', function () {
+    //     if (this.files && this.files[0]) {
+    //         formData.append("file", this.files[0]);
+    //     }
+    // });
+    // $('#modModalImg').attr('src', productImgSrc).on('error', function () {
+    //
+    //     $(this).attr('src', '/static/productImg/default/defaultImage.png');
+    //
+    // }).show();
+    // $('#modModalImg').attr('src', response.updatedProductImageSrc || '/static/productImg/default/defaultImage.png').show();
+    // $('#tableModal').show(); // 모달 열기
+    // },
+    //         error: function (jqXHR, textStatus, errorThrown) {
+    //             console.error("상품 등록 실패", textStatus, errorThrown);
+    //             console.log("서버 응답:", jqXHR.responseText);
+    //         }
+    //     });
+    // })
+</script>
+</html>
