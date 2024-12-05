@@ -222,5 +222,347 @@
     //         }
     //     });
     // })
+
+
+
+
+
+
+
+
+    // $(document).ready(function () {
+    //
+    //
+    //     $(".product_table tr").click(function () {
+    //         let str = "";
+    //         let tdArr = []; // 배열 선언
+    //
+    //         // 현재 클릭된 Row(<tr>)
+    //         let tr = $(this);
+    //         let td = tr.children();
+    //
+    //         console.log("클릭한 Row의 모든 데이터 : " + tr.text());
+    //
+    //         td.each(function (i) {
+    //             tdArr.push(td.eq(i).text());
+    //         });
+    //
+    //         console.log("배열에 담긴 값 : " + tdArr);
+    //
+    //         var num = td.eq(0).text();
+    //         var code = td.eq(1).text();
+    //         var name = td.eq(2).text();
+    //         var sale_price = td.eq(3).text();
+    //         var price = td.eq(4).text();
+    //         var category_code = td.eq(5).text();
+    //         var product_img = td.eq(6).text().trim();
+    //         var product_explain = td.eq(7).text();
+    //         var company_code = td.eq(8).text();
+    //
+    //         str += " * 클릭된 Row의 td값 = 번호:" + num + "상품코드: <font color='red'>" + code + "</font>" +
+    //             ", 상품명: <font color='red'>" + name + "</font>" +
+    //             ", 공급가격: <font color='red'>" + sale_price + "</font>" +
+    //             ", 판매가격: <font color='red'>" + price + "</font>" +
+    //             ", 분류코드: <font color='red'>" + category_code + "</font>" +
+    //             ", 이미지: <font color='red'>" + product_img + "</font>" +
+    //             ", 설명: <font color='red'>" + product_explain + "</font>" +
+    //             ", 회사코드: <font color='red'>" + company_code + "</font>";
+    //
+    //         $("#Result1").html(" * 클릭한 Row의 모든 데이터 = " + tr.text());
+    //         $("#Result2").html(str);
+    //
+    //
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/productlistview1",
+    //             data: JSON.stringify({
+    //                 num: num,
+    //                 product_code: code,
+    //                 product_name: name,
+    //                 sale_price: sale_price,
+    //                 price: price,
+    //                 category_code: category_code,
+    //                 product_img: product_img,
+    //                 product_explain: product_explain,
+    //                 company_code: company_code
+    //             }),
+    //             contentType: "application/json; charset=utf-8",
+    //             success: function (response) {
+    //                 console.log("서버로 전송 성공", response);
+    //                 let modalContent = "";
+    //                 response.forEach(function (product) {
+    //                     modalContent += `
+    //             <div class="product">
+    //                 <img src="${product.product_img}" alt="${product.product_name}">
+    //                 <h4>${product.product_name}</h4>
+    //                 <p>${product.product_explain}</p>
+    //                 <p>Price: ${product.sale_price}</p>
+    //             </div>
+    //         `;
+    //                 });
+    //
+    //                 // 모달을 열고, 모달에 내용을 삽입
+    //                 $('#modal .modal-body').html(modalContent);
+    //                 $('#modal').modal('show');
+    //
+    //
+    //             },
+    //             error: function (jqXHR, textStatus, errorThrown) {
+    //                 console.log("서버로 전송 실패", textStatus, errorThrown);
+    //             }
+    //         });
+    //
+    //         // alert("확인");
+    //     });
+    // });
+
+    // $(document).ready(function () {
+    //     $(".product_image tr").click(function () {
+    // let url = encodeURIComponent("'/display?filename='");
+    // var url2 = encodeURIComponent("'/display?filename='+ ${data_product.product_img}");
+    // document.getElementById("1112").src=url2;
+    // document.getElementById("1111").href=url2;
+
+    // const divArea = $(".uploadResult");
+    //     let aa = this;
+    // $.get("/controller/ProductController/showImage", {filename: aa}, function (data){
+    //     alert(data);
+    //     })
+
+    // divArea.append("<img src='/display?fileName=" + aa +"'");
+    // divArea.append("<img src='/display?fileName=" + arr.URLEncoder.encode(data_product.product_img, StandardCharsets.UTF_8) +"'");
+    // })});
+    // const show = arr => {
+    //
+    //
+    //
+    // }
+    // });
+
+
+
+
+    // ********************** controller
+    //        if (file == null || file.isEmpty()) {
+    // 파일이 없는 경우. defaultImage를 저장한다.
+    //            if (productVO.getProduct_img() != null) {
+    //                productVO.setProduct_img(productVO.getProduct_img());
+    //            } else {
+    //            String defaultDir = "C:/Data/aa/projectSample-master/src/main/resources/static/productImg/default/";
+    //                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //            File defaultFile = productFile.getFile(defaultDir, "defaultImage.png");
+    //            ProductFile file1 = new ProductFile();
+    //            file1.saveFile(defaultFile);
+    //            }
+    //
+    //        } else {
+    //            // 새것 저장
+    //            String saveFileName = productFile.saveFile(file);
+    //            productVO.setProduct_img(saveFileName);
+    //        }
+
+    //        productservice.updateProduct(productVO);
+    //        return "redirect:productlistview";
+
+    //        try {
+    //
+    //            if (file.isEmpty()) {
+    //                if(productVO.getProduct_img()==null) {
+    //                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //                }
+    //            } else {
+    //                String saveFileName = productFile.saveFile(file);
+    //                productVO.setProduct_img(saveFileName);
+    //            }
+    //            productservice.insertProduct(productVO);
+    //            System.out.println(saveFileName + "savefileName");
+    //            System.out.println(productVO.getProduct_img() + "product_img");
+    //            String sub = saveFileName;
+    //            if (saveFileName.length() > 70) {
+    //                sub = saveFileName.substring(69);
+    //            }
+    //            System.out.println(sub + "sub");
+    //            Long subLong = Long.parseLong(sub);
+    //            inputStream = new FileInputStream(new File(productVO.getProduct_img()));
+    //
+    //            response.setContentType("image/jpeg");
+    //            showImage(subLong, response, inputStream);
+
+    //            return "redirect:productlistview";
+
+    //        } catch (NumberFormatException e) {
+    //
+    //        }
+    //        return "redirect:productlistview";
+    //    }
+
+    //    @ResponseBody
+    //    @GetMapping("/productImg/{product_img}")
+    //    public UrlResource showImage(@PathVariable("product_img") Long img, HttpServletResponse response, InputStream inputStream) throws IOException {
+    //
+    ////        img = URLDecoder.decode(img, "UTF-8");
+    //        response.setContentType("image/jpeg");
+    //        InputStream i = new ByteArrayInputStream("product_img".getBytes());
+    //        IOUtils.copy(i, response.getOutputStream());
+    //
+    //        return new UrlResource("file:" + "product_img");
+
+    /// /        return new UrlResource("file:"+ img);
+    //    }
+
+    //    @GetMapping
+
+    //    @GetMapping("/{product_img}")
+    //    public ResponseEntity<byte[]> imgview(@PathVariable("product_img") Long img) throws Exception {
+    //        InputStream ii = new FileInputStream(""+img);
+    //        byte[] imageByteArray = IOUtils.copy(i)
+    //        ii.close();
+    //        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+    //    }
+    //@GetMapping("/{product_img}")
+    //public void renderImageFromDB(@PathVariable("product_img") Long im, HttpServletResponse response)
+    //        throws IOException {
+    //
+    //    log.debug("renderImageFromDB in IamgeController");
+    //
+    //
+    //
+    //        byte[] byteArray = new byte[recipeCommand.getImage().length];
+    //
+    //        int index = 0;
+    //        for (byte b : recipeCommand.getImage()) {
+    //            byteArray[index++] = b;
+    //
+    //
+    //        response.setContentType("image/jpeg");
+    //        InputStream is = new ByteArrayInputStream(byteArray);
+    //        IOUtils.copy(is, response.getOutputStream());
+    //    }
+    //}
+    //    @GetMapping("/{product_img}")
+    //    public void imgview(@PathVariable("product_img") Long img, HttpServletResponse response) throws IOException {
+    //
+    //    }
+
+    //    @GetMapping("'/display?filename='+${data_product.product_img}")
+    //    @ResponseBody
+    //    public Resource viewimg(@PathVariable("data_product.product_img") long product_img, Model model) throws Exception {
+    //        FileEntity file = productFile.
+    //    }
+    //    @GetMapping("/display")
+    //    public ResponseEntity<Resource> viewimage(@RequestParam("filename") String filename) throws Exception {
+    //        String uploadDir = "C:/Data/aa/projectSample-master/src/main/resources/static/productImg/";
+    //        uploadDir = URLEncoder.encode(uploadDir, "UTF-8");
+    //        FileSystemResource resource = new FileSystemResource(uploadDir + filename);
+    //        if(!resource.exists())
+    //            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+    //        HttpHeaders header = new HttpHeaders();
+    //        Path filePath = null;
+    //        try{
+    //            filePath = Paths.get(uploadDir + filename);
+    //            header.add("Content-type", Files.probeContentType(filePath));
+    //        }catch(IOException e) {
+    //            e.printStackTrace();
+    //        }
+    //        return new ResponseEntity<Resource>((Resource) resource, header, HttpStatus.OK);
+    //    }
+
+
+    //    @GetMapping("/productlistview")
+    //    public String product(Model model, @ModelAttribute ProductPageVO productPageVO, @RequestPart(value = "file")MultipartFile file) throws Exception {
+    //        if(productPageVO.getPage()==null) {
+    //            productPageVO.setPage(1);
+    //        }
+    //        productPageVO.setTotalCount(productservice.totalproductcount());
+    //
+    //        List<ProductVO> productlist = productservice.selectAll(productPageVO);
+
+    /// /        System.out.println(productVO.getProduct_img());
+    //        model.addAttribute("productlist", productlist);
+    //        model.addAttribute("productPageVO", productPageVO);
+    //
+    //        return "MainProduct";
+    //    }
+
+
+    //     단일 검색
+    //    @RequestBody
+    //    @PostMapping("/productmod")
+    //    public String productMod(ProductVO productVO, Model model) throws Exception {
+    //        productVO = productservice.selectOneProduct(productVO.getProduct_name());
+    //        model.addAttribute("productVOMod", productVO);
+    //        return "redirect:productlistview";
+    //    }
+
+    //    @PostMapping("/productmod")
+    //    public String productMod(@RequestParam(value="product_code",required = false) String product_code, Model model) throws Exception {
+    //        System.out.println(product_code + " 받은 product_code");
+    //
+    //        ProductVO productVO = productservice.selectOneProduct(product_code);
+    //        if (productVO == null) {
+    //            model.addAttribute("error", "제품 정보를 찾을 수 없습니다.");
+    //            return "errorPage"; // 에러 페이지로 리다이렉트할 경우
+    //        }
+    //        ProductPageVO productPageVO = new ProductPageVO();
+    //        productPageVO.setStartPage(1); // Or appropriate values
+    //        productPageVO.setEndPage(10);
+    //
+    //        System.out.println(product_code+"받은 product_code");
+    //
+    //        System.out.println(productVO.toString());
+    //        model.addAttribute("productVOMod", productVO);
+    //        model.addAttribute("productPageVO", productPageVO);
+    //        return "MainProduct";
+    //    }
+
+    // 새로 입력 받은 내용 수정
+    //    @PostMapping("/modProductInfo")
+    //    public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+    //        if (file != null && !file.isEmpty()) {
+    //            String saveFileName = productFile.saveFile(file);
+    //            if (saveFileName != null) {
+    //                productVO.setProduct_img(saveFileName);
+    //            }
+    //        } else {
+    //            // 사용자에게 입력을 받지 않았을 때만 기본 이미지 설정
+    //            if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+    //                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //            }
+    //        }
+
+
+    //        if (file != null && !file.isEmpty()) {
+    //            String saveFileName = productFile.saveFile(file);
+    //            if(saveFileName!=null) {
+    //            productVO.setProduct_img(saveFileName);
+    //            } else {
+    //                if(productVO.getProduct_img()==null){
+    //                    productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //                }
+    //            }
+    //        }
+    //        if (file != null && !file.isEmpty()) {
+    //            String filePath = productFile.saveFile(file);
+    //            if (filePath != null) {
+    //                productVO.setProduct_img(filePath);
+    //            }
+    //        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+    //            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //        }
+    //        if (file != null && !file.isEmpty()) {
+    //            String absolutePath = productFile.saveFile(file);
+    //            if (absolutePath != null) {
+    //                String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+    //                productVO.setProduct_img(relativePath);
+    //            }
+    //        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+    //            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+    //        }
+    //        productservice.updateProduct(productVO);
+    //        return "redirect:productlistview";
+    //    }
+    //}
+
+
 </script>
 </html>

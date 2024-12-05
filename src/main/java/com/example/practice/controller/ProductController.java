@@ -29,6 +29,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.io.ByteArrayInputStream;
@@ -76,108 +77,6 @@ public class ProductController {
         return "redirect:productlistview";
     }
 
-    //        try {
-//
-//            if (file.isEmpty()) {
-//                if(productVO.getProduct_img()==null) {
-//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//                }
-//            } else {
-//                String saveFileName = productFile.saveFile(file);
-//                productVO.setProduct_img(saveFileName);
-//            }
-//            productservice.insertProduct(productVO);
-//            System.out.println(saveFileName + "savefileName");
-//            System.out.println(productVO.getProduct_img() + "product_img");
-//            String sub = saveFileName;
-//            if (saveFileName.length() > 70) {
-//                sub = saveFileName.substring(69);
-//            }
-//            System.out.println(sub + "sub");
-//            Long subLong = Long.parseLong(sub);
-//            inputStream = new FileInputStream(new File(productVO.getProduct_img()));
-//
-//            response.setContentType("image/jpeg");
-//            showImage(subLong, response, inputStream);
-
-//            return "redirect:productlistview";
-
-//        } catch (NumberFormatException e) {
-//
-//        }
-//        return "redirect:productlistview";
-//    }
-
-//    @ResponseBody
-//    @GetMapping("/productImg/{product_img}")
-//    public UrlResource showImage(@PathVariable("product_img") Long img, HttpServletResponse response, InputStream inputStream) throws IOException {
-//
-////        img = URLDecoder.decode(img, "UTF-8");
-//        response.setContentType("image/jpeg");
-//        InputStream i = new ByteArrayInputStream("product_img".getBytes());
-//        IOUtils.copy(i, response.getOutputStream());
-//
-//        return new UrlResource("file:" + "product_img");
-
-    /// /        return new UrlResource("file:"+ img);
-//    }
-
-//    @GetMapping
-
-//    @GetMapping("/{product_img}")
-//    public ResponseEntity<byte[]> imgview(@PathVariable("product_img") Long img) throws Exception {
-//        InputStream ii = new FileInputStream(""+img);
-//        byte[] imageByteArray = IOUtils.copy(i)
-//        ii.close();
-//        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
-//    }
-//@GetMapping("/{product_img}")
-//public void renderImageFromDB(@PathVariable("product_img") Long im, HttpServletResponse response)
-//        throws IOException {
-//
-//    log.debug("renderImageFromDB in IamgeController");
-//
-//
-//
-//        byte[] byteArray = new byte[recipeCommand.getImage().length];
-//
-//        int index = 0;
-//        for (byte b : recipeCommand.getImage()) {
-//            byteArray[index++] = b;
-//
-//
-//        response.setContentType("image/jpeg");
-//        InputStream is = new ByteArrayInputStream(byteArray);
-//        IOUtils.copy(is, response.getOutputStream());
-//    }
-//}
-//    @GetMapping("/{product_img}")
-//    public void imgview(@PathVariable("product_img") Long img, HttpServletResponse response) throws IOException {
-//
-//    }
-
-    //    @GetMapping("'/display?filename='+${data_product.product_img}")
-//    @ResponseBody
-//    public Resource viewimg(@PathVariable("data_product.product_img") long product_img, Model model) throws Exception {
-//        FileEntity file = productFile.
-//    }
-//    @GetMapping("/display")
-//    public ResponseEntity<Resource> viewimage(@RequestParam("filename") String filename) throws Exception {
-//        String uploadDir = "C:/Data/aa/projectSample-master/src/main/resources/static/productImg/";
-//        uploadDir = URLEncoder.encode(uploadDir, "UTF-8");
-//        FileSystemResource resource = new FileSystemResource(uploadDir + filename);
-//        if(!resource.exists())
-//            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
-//        HttpHeaders header = new HttpHeaders();
-//        Path filePath = null;
-//        try{
-//            filePath = Paths.get(uploadDir + filename);
-//            header.add("Content-type", Files.probeContentType(filePath));
-//        }catch(IOException e) {
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<Resource>((Resource) resource, header, HttpStatus.OK);
-//    }
 
     //     물품 전체 리스트
     @ResponseBody
@@ -206,28 +105,14 @@ public class ProductController {
     }
 
 
-//    @GetMapping("/productlistview")
-//    public String product(Model model, @ModelAttribute ProductPageVO productPageVO, @RequestPart(value = "file")MultipartFile file) throws Exception {
-//        if(productPageVO.getPage()==null) {
-//            productPageVO.setPage(1);
-//        }
-//        productPageVO.setTotalCount(productservice.totalproductcount());
-//
-//        List<ProductVO> productlist = productservice.selectAll(productPageVO);
 
-    /// /        System.out.println(productVO.getProduct_img());
-//        model.addAttribute("productlist", productlist);
-//        model.addAttribute("productPageVO", productPageVO);
-//
-//        return "MainProduct";
-//    }
 
     // 물품 검색, 이름 다중 검색
     @GetMapping("/productoneview")
     public String productOneView(@RequestParam("search") String product_name, @RequestParam("search1") String product_price, @RequestParam("search2") String category_code, @ModelAttribute ProductVO productVO, Model model) throws Exception {
         List<ProductVO> productVOS = productservice.selectProduct(product_name, product_price, category_code);
         System.out.println("확인: " + product_name);
-        model.addAttribute("productVOS", productVOS);
+        model.addAttribute("productlist", productVOS);
         // 입력 안하고 검색하면, 전체 리스트 호출
         if (productVOS.isEmpty()) {
             return "redirect:productlistview";
@@ -242,41 +127,14 @@ public class ProductController {
     }
 
     // 리스트에서 물품 삭제
-    @GetMapping("del")
-    public String del(@RequestParam("delcode") String delcode) throws Exception {
-        productservice.deleteProduct(delcode);
+    @PostMapping("/productdel")
+    public String del(@RequestParam("num[]") List<Integer> num) throws Exception {
+        System.out.println("controller in"+num);
+        productservice.deleteProduct(num);
+        System.out.println("controller out : check");
         return "redirect:productlistview";
     }
 
-//     단일 검색
-//    @RequestBody
-//    @PostMapping("/productmod")
-//    public String productMod(ProductVO productVO, Model model) throws Exception {
-//        productVO = productservice.selectOneProduct(productVO.getProduct_name());
-//        model.addAttribute("productVOMod", productVO);
-//        return "redirect:productlistview";
-//    }
-
-//    @PostMapping("/productmod")
-//    public String productMod(@RequestParam(value="product_code",required = false) String product_code, Model model) throws Exception {
-//        System.out.println(product_code + " 받은 product_code");
-//
-//        ProductVO productVO = productservice.selectOneProduct(product_code);
-//        if (productVO == null) {
-//            model.addAttribute("error", "제품 정보를 찾을 수 없습니다.");
-//            return "errorPage"; // 에러 페이지로 리다이렉트할 경우
-//        }
-//        ProductPageVO productPageVO = new ProductPageVO();
-//        productPageVO.setStartPage(1); // Or appropriate values
-//        productPageVO.setEndPage(10);
-//
-//        System.out.println(product_code+"받은 product_code");
-//
-//        System.out.println(productVO.toString());
-//        model.addAttribute("productVOMod", productVO);
-//        model.addAttribute("productPageVO", productPageVO);
-//        return "MainProduct";
-//    }
 
     @PostMapping("/productmod")
     @ResponseBody
@@ -319,53 +177,7 @@ public class ProductController {
     }
 
 
-    // 새로 입력 받은 내용 수정
-//    @PostMapping("/modProductInfo")
-//    public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-//        if (file != null && !file.isEmpty()) {
-//            String saveFileName = productFile.saveFile(file);
-//            if (saveFileName != null) {
-//                productVO.setProduct_img(saveFileName);
-//            }
-//        } else {
-//            // 사용자에게 입력을 받지 않았을 때만 기본 이미지 설정
-//            if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
-//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//            }
-//        }
 
-
-        //        if (file != null && !file.isEmpty()) {
-//            String saveFileName = productFile.saveFile(file);
-//            if(saveFileName!=null) {
-//            productVO.setProduct_img(saveFileName);
-//            } else {
-//                if(productVO.getProduct_img()==null){
-//                    productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//                }
-//            }
-//        }
-//        if (file != null && !file.isEmpty()) {
-//            String filePath = productFile.saveFile(file);
-//            if (filePath != null) {
-//                productVO.setProduct_img(filePath);
-//            }
-//        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
-//            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//        }
-//        if (file != null && !file.isEmpty()) {
-//            String absolutePath = productFile.saveFile(file);
-//            if (absolutePath != null) {
-//                String relativePath = "/static/productImg/" + new File(absolutePath).getName();
-//                productVO.setProduct_img(relativePath);
-//            }
-//        } else if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
-//            productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//        }
-//        productservice.updateProduct(productVO);
-//        return "redirect:productlistview";
-//    }
-//}
         @PostMapping("/modProductInfo")
         public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
 
@@ -393,25 +205,6 @@ public class ProductController {
             return "redirect:productlistview";
         }}
 
-//        if (file == null || file.isEmpty()) {
-// 파일이 없는 경우. defaultImage를 저장한다.
-//            if (productVO.getProduct_img() != null) {
-//                productVO.setProduct_img(productVO.getProduct_img());
-//            } else {
-//            String defaultDir = "C:/Data/aa/projectSample-master/src/main/resources/static/productImg/default/";
-//                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-//            File defaultFile = productFile.getFile(defaultDir, "defaultImage.png");
-//            ProductFile file1 = new ProductFile();
-//            file1.saveFile(defaultFile);
-//            }
-//
-//        } else {
-//            // 새것 저장
-//            String saveFileName = productFile.saveFile(file);
-//            productVO.setProduct_img(saveFileName);
-//        }
 
-//        productservice.updateProduct(productVO);
-//        return "redirect:productlistview";
 
 

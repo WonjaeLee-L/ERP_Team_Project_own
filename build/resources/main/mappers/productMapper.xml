@@ -42,9 +42,11 @@
         </where>
     </select>
 
-    <delete id="deleteProduct" parameterType="com.example.practice.vo.ProductVO">
-        delete product
-        where product_code = #{delcode}
+    <delete id="deleteProduct" parameterType="java.util.List">
+        delete product where NUM in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </delete>
 
     <update id="updateProduct" parameterType="com.example.practice.vo.ProductVO">
