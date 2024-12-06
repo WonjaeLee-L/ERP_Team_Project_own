@@ -10,6 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://kit.fontawesome.com/876cee0f64.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="jquery-1.2.6.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.js"></script>
+
 
 </head>
 <style>
@@ -151,21 +154,6 @@
     }
 
     .modalbtn {
-        /*border: none;*/
-        /*display: block;*/
-        /*text-align: center;*/
-        /*cursor: pointer;*/
-        /*text-transform: uppercase;*/
-        /*outline: none;*/
-        /*overflow: hidden;*/
-        /*position: relative;*/
-        /*color: #fff;*/
-        /*font-weight: 700;*/
-        /*font-size: 15px;*/
-        /*background-color: #222;*/
-        /*padding: 17px 60px;*/
-        /*margin: 0 auto;*/
-        /*box-shadow: 0 5px 15px rgba(0, 0, 0, 0.20);*/
         background-color: #4CAF50; /* 초록색 버튼 */
         color: white;
         border: none;
@@ -173,7 +161,6 @@
         cursor: pointer;
         border-radius: 5px;
         text-align: center;
-
     }
 
     .modalbtn:hover {
@@ -258,14 +245,13 @@
 
 
     table.product_table {
-        /*border-collapse: separate;*/
-        /*border-spacing: 0;*/
-        /*width: 100%;*/
         width: 100%;
         border-collapse: collapse;
         background-color: #ffffff; /* 테이블 배경 흰색 */
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        border-collapse: collapse;
     }
 
     .select_product, .select_group {
@@ -313,13 +299,38 @@
         font-family: "Noto Sans KR", sans-serif;
     }
 
+    /* page */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .pagination-group, .pagination-link {
+        margin: 0 5px;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .pagination-link.active {
+        background-color: #007bff;
+        color: white;
+        cursor: default;
+    }
+
+    .pagination-link:hover:not(.active) {
+        background-color: #ddd;
+    }
+
 
     /*search, add 관련*/
     .search-wrap {
         /*margin: 30px;*/
         width: 300px;
         height: 60px;
-        /*background: tan;*/
         background-color: #c8e6c9; /* 마우스 오버 시 짙은 초록색 배경 */
         border-radius: 30px;
     }
@@ -341,7 +352,6 @@
 
     .search-wrap .search-form input:focus {
         outline: none;
-
     }
 
     input[type=text], input[type=number] {
@@ -369,12 +379,6 @@
         /*text-align: center;*/
     }
 
-    .bottom-wrap-bottom {
-        float: left;
-        margin-top: 10px;
-        margin-left: 50px;
-    }
-
     .search-form {
         /*margin-top: 50px;*/
     }
@@ -393,16 +397,15 @@
     }
 
     /* select box */
-    /*.selectDiv  * {*/
-    /*    box-sizing: border-box;*/
-    /*}*/
 
     .selectDiv {
         position: relative;
     }
 
-
-
+    select:focus {
+        outline: none;
+    }
+    
     .selectDiv .select_category {
         background-color: #d0f0c0;
         -o-appearance: none;
@@ -427,18 +430,14 @@
         cursor: pointer;
     }
 
-    .selectDiv .category_name_arrow img {
-        width: 70%;
-        transition: .3s;
-    }
+    /*.selectDiv .category_name_arrow img {*/
+    /*    width: 70%;*/
+    /*    transition: .3s;*/
+    /*}*/
 
-    .selectDiv .selectList:focus .category_name_arrow img {
-        transform: rotate(180deg);
-    }
-
-    .food {
-        /*background: url('../image/food.png') calc(100% - 10px) center no-repeat;*/
-    }
+    /*.selectDiv .selectList:focus .category_name_arrow img {*/
+    /*    transform: rotate(180deg);*/
+    /*}*/
 
     .selectList {
         background-color: #c8e6c9;
@@ -481,6 +480,10 @@
     /* 이미지 스타일 */
     .modModalImgDiv img {
         border: 2px solid #66BB6A; /* 이미지 경계선 초록색 */
+    }
+
+    .hidden {
+        display: none;
     }
 
 
@@ -624,18 +627,22 @@
     <div class="modal" id="addProduct">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h4 class="modal-title" style="margin-left: 30px">신규 상품 등록 check</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <form method="post" action="product" enctype="multipart/form-data">
+                    <!--                <form th:action="@{/product}" th:object="${productVO}" method="post" enctype="multipart/form-data">-->
                     <div class="modal-body">
-
                         <div class="col-md-3">
                             <label for="inputCode" class="form-label">상품코드</label>
                             <input type="text" class="form-control" id="inputCode" name="product_code">
+
+                            <!--                            th:field="*{product_code}" th:if="${#fields.hasErrors('product_code')}"-->
+                            <!--                            th:errors="*{product_code}"-->
+                            <!--                            <div th:each="msg : ${#field.errors('product_code')}">-->
+                            <!--                                <p th:text="${msg}"></p>-->
+                            <!--                            </div>-->
                         </div>
                         <div class="col-md-5">
                             <label for="inputProduct" class="form-label">상품명</label>
@@ -653,10 +660,6 @@
                             <label for="inputCategory" class="form-label">카테고리코드</label>
                             <input type="text" class="form-control" id="inputCategory" name="category_code">
                         </div>
-                        <!--                        <div class="col-12">-->
-                        <!--                            <label for="inputImg" class="form-label">이미지</label>-->
-                        <!--                            <input type="text" class="form-control" id="inputImg" name="product_img">-->
-                        <!--                        </div>-->
                         <div class="col-12">
                             <label for="inputExplain" class="form-label">설명</label>
                             <input type="text" class="form-control" id="inputExplain" name="product_explain">
@@ -665,18 +668,6 @@
                             <label for="inputCompanyCode" class="form-label">회사코드</label>
                             <input type="text" class="form-control" id="inputCompanyCode" name="company_code">
                         </div>
-                        <!--                        <label class="form-label">파일 업로드</label>-->
-                        <!--                        <div class="fileBox">-->
-
-                        <!--                        <div class="fileBox">-->
-                        <!--                            <label for="upFile">-->
-                        <!--                                <input class="uploadFile" value="inputImg" placeholder="inputImg">-->
-                        <!--                            </label>-->
-                        <!--                            <label for="upFile">찾기</label>-->
-                        <!--                            <input type="file" name="product_img" id="inputImg">-->
-                        <!--                        </div>-->
-
-                        <!--                        <label class="form-label">파일 업로드</label>-->
                         <label for="productFile">찾기</label>
                         <input type="file" id="productFile" name="file" value="file">
                     </div>
@@ -775,23 +766,24 @@
     <table class="product_table" id="mainTable">
         <thead>
         <tr class="product_table_th">
-            <th class="product_table">상품 번호</th>
+            <th class="product_table">상품 번호<img src="" alt="" style="width: 20px" height="20px"></th>
             <th class="product_table">상품 코드</th>
             <th class="product_table">상품 이름</th>
             <th class="product_table">공급 가격</th>
             <th class="product_table">판매 가격</th>
-
             <th class="product_table">
                 <form>
                     <div class="selectDiv">
-                        <select name="category_name" class="select_category">
+                        <select name="category_name" class="select_category" style= "border: none">
                             <option value="none" class="selectList" selected disabled>상품분류</option>
                             <option value="all" class="selectList">전체</option>
                             <option value="9999" class="selectList" id="food">음식</option>
                             <option value="2222" class="selectList" id="clothes">의류</option>
                         </select>
-                        <span class="category_name_arrow arrow"><img class="arrow_img"
-                                                                     src="../static/productImg/default/free-icon-double-arrows-11606887.png"></span>
+                        <span class="category_name_arrow arrow"><img class="hidden" src="../static/productImg/default/free-icon-down-arrow-down.png">
+                            <!--                            <span class="category_name_arrow arrow">-->
+                                <img src="../static/productImg/default/free-icon-down-arrow-up.png">
+                            <!--                        </span>-->
                     </div>
                 </form>
             </th>
@@ -806,7 +798,7 @@
         <tr class="product_table" th:each="data_product : ${productlist}"
             th:with="index=${(productPageVO.page -1)*10} + data_product.num">
             <td class="product_table" th:text="${data_product.num}" id="num">
-            </a>
+                </a>
             </td>
             <td class="product_table" th:text="${data_product.product_code}" id="proudct_code">
             </td>
@@ -828,9 +820,9 @@
             <td class="product_table" th:text="${data_product.product_explain}" id="product_explain"></td>
             <td class="product_table" th:text="${data_product.company_code}" id="company_code"></td>
             <td class="product_table">
-<!--                <label>-->
-                    <input type="checkbox" class="check" name="check" value="check">
-<!--                </label>-->
+                <!--                <label>-->
+                <input type="checkbox" class="check" name="check" value="check">
+                <!--                </label>-->
             </td>
         </tr>
         </tbody>
@@ -844,59 +836,54 @@
             </td>
         </tr>
         <tr>
-            <td>
-            <div class="pagination-container">
-                <!-- 이전 페이지 그룹 -->
-                <a th:if="${productPageVO?.prev}"
-                   th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                   class="pagination-group">
-                    <span>◀ 이전</span>
-                </a></td>
-                <!-- 페이지 번호 순회 -->
-                <td>
-                <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">
-                    <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                       th:text="${idx}"
-                       th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">
+            <td colspan="10">
+                <div class="pagination-container">
+                    <!-- 이전 페이지 그룹 -->
+                    <a th:if="${productPageVO?.prev}"
+                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                       class="pagination-group">
+                        <span>◀ 이전</span>
+                    </a>
+
+                    <!-- 페이지 번호 순회 -->
+                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">
+                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                           th:text="${idx}"
+                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">
+                        </a>
+                    </div>
+
+                    <!-- 다음 페이지 그룹 -->
+                    <a th:if="${productPageVO?.next}"
+                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                       class="pagination-group">
+                        <span>다음 ▶</span>
                     </a>
                 </div>
-            </td>
-            <td>
-                <!-- 다음 페이지 그룹 -->
-                <a th:if="${productPageVO?.next}"
-                   th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                   class="pagination-group">
-                    <span>다음 ▶</span>
-                </a>
-            </div>
             </td>
         </tr>
         </tfoot>
     </table>
 
 
-
     <!-- body 하단. 검색 input 및 물품 등록 button -->
     <div class="bottom-wrap-top">
         <div class="search-wrap">
             <form action="productoneview" method="get" class="search-form">
-                <label for="search" class="hide">상품명</label>
-                <input type="text" id="search" name="search1">
-                <label for="search1" class="hide">가격</label>
-                <input type="text" id="search1" name="search1">
-                <label for="search2" class="hide">카테고리명</label>
-                <input type="text" id="search2" name="search1">
+                <label for="search-name" class="hide">상품명</label>
+                <input type="text" id="search-name" name="search-name" placeholder="상품명">
+                <label for="search-price" class="hide">가격</label>
+                <input type="text" id="search-price" name="search-price" placeholder="가격">
+                <label for="search-category" class="hide">카테고리명</label>
+                <input type="text" id="search-category" name="search-category" placeholder="카테고리명">
                 <button type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
         </div>
-    </div>
-    <div class="bottom-wrap-bottom">
         <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">
             물품 등록
         </button>
-
     </div>
 
 
@@ -979,35 +966,74 @@
 
 
     $(document).ready(function () {
-        console.log("준비")
+            // console.log("준비")
 
-        // select box에서 선택한 카테고리에 따른 검색
-        $("select[name=category_name]").change(function () {
-            var code = $(this).val();
-            $.ajax({
-                type: 'post',
-                url: 'productmod',
-                data: ({category_code: code}),
-                datatype: 'json',
-                success: function (response) {
+            // table sorting
+            $(document).ready(function () {
+                $('#mainTable thead th').off('click').on('click', function () {
+                    var table = $('#mainTable');
+                    var tbody = table.find('tbody');
+                    var rows = tbody.find('tr').get();
 
-                    let tableBody = $("#wonjae");
-                    // 기존 콘텐츠 비우기
-                    tableBody.empty();
+                    var column = $(this).index();
+                    var sortOrder = $(this).hasClass('asc') ? 'desc' : 'asc';
 
-                    response.productVOMod.forEach(productVO => {
+                    if (column === 5) {
+                        return;
+                    }
+                    // if문 대신 togglClass 적용
+                    // $(this).toggleClass('asc', sortOrder === 'asc').text(sortOrder === 'asc' ? "상품 코드 오름차순 ▲" : "상품 코드 내림차순 ▼");
+                    $(this).toggleClass('asc', sortOrder === 'asc').children().attr('src', sortOrder === 'asc' ? "../static/productImg/default/free-icon-down-arrow-up.png" : "../static/productImg/default/free-icon-down-arrow-down.png");
+                    $(this).toggleClass('desc', sortOrder === 'desc')
 
-                        let category_name;
+                    $(this).siblings().removeClass('asc').removeClass('desc');
 
-                        if (productVO.category_code === '9999') {
-                            category_name = '음식';
-                        } else if (productVO.category_code === '2222') {
-                            category_name = '의류';
-                        } else {
-                            category_name = '기타';
-                        }
+                    rows.sort(function (a, b) {
+                        var keyA = $(a).children('td').eq(column).text().toUpperCase();
+                        var keyB = $(b).children('td').eq(column).text().toUpperCase();
 
-                        let row = `
+                        if (keyA < keyB) return sortOrder === 'asc' ? -1 : 1;
+                        if (keyA > keyB) return sortOrder === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+
+                    $.each(rows, function (index, row) {
+                        tbody.append(row);
+                    });
+                });
+            });
+
+            // select box에서 선택한 카테고리에 따른 검색
+            var orderCategory = '1';
+            $("select[name='category_name']").on('click', function () {
+                $(this).parent().children('.category_name_arrow').children().toggleClass('hidden');
+            })
+            $("select[name=category_name]").change(function () {
+                var code = $(this).val();
+                $.ajax({
+                    type: 'post',
+                    url: 'productmod',
+                    data: ({category_code: code}),
+                    datatype: 'json',
+                    success: function (response) {
+
+                        let tableBody = $("#wonjae");
+                        // 기존 콘텐츠 비우기
+                        tableBody.empty();
+
+                        response.productVOMod.forEach(productVO => {
+
+                            let category_name;
+
+                            if (productVO.category_code === '9999') {
+                                category_name = '음식';
+                            } else if (productVO.category_code === '2222') {
+                                category_name = '의류';
+                            } else {
+                                category_name = '기타';
+                            }
+
+                            let row = `
         <tr class="product_table">
             <td class="product_table">${productVO.num}</td>
             <td class="product_table">${productVO.product_code}</td>
@@ -1016,142 +1042,127 @@
             <td class="product_table">${productVO.price}</td>
 <!--            <td>${productVO.category_code}</td>-->
             <td class="product_table">${category_name}</td>
-            <td class="product_table">${productVO.product_img ? '<img src="productImg/' + productVO.product_img + '" alt="no image">' : 'No Image'}</td>
-            <td class="product_table">${productVO.product_explain}</td>
+            <td class="product_table"><img src="${productVO.product_img}" alt="no image" style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
+                       <td class="product_table">${productVO.product_explain}</td>
             <td class="product_table">${productVO.company_code}</td>
         </tr>
     `;
-                        tableBody.append(row);
-                    });
-                    // 페이징 업데이트
-                    let paginationContainer = $(".pagination-container");
-                    paginationContainer.empty();
+                            tableBody.append(row);
+                        });
+                        // 페이징 업데이트
+                        let paginationContainer = $(".pagination-container");
+                        paginationContainer.empty();
 
-                    let productPageVO = response.productPageVO;
-                    if (productPageVO.prev) {
-                        paginationContainer.append('<a href="#" class="pagination-group">◀ 이전</a>');
+                        let productPageVO = response.productPageVO;
+                        if (productPageVO.prev) {
+                            paginationContainer.append('<a href="#" class="pagination-group">◀ 이전</a>');
+                        }
+
+                        for (let i = productPageVO.startPage; i <= productPageVO.endPage; i++) {
+                            let activeClass = productPageVO.page == i ? 'active' : '';
+                            paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}">${i}</a>`);
+                        }
+
+                        if (productPageVO.next) {
+                            paginationContainer.append('<a href="#" class="pagination-group">다음 ▶</a>');
+                        }
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + textStatus + ", " + errorThrown);
+                        console.log(jqXHR.responseText);
                     }
 
-                    for (let i = productPageVO.startPage; i <= productPageVO.endPage; i++) {
-                        let activeClass = productPageVO.page == i ? 'active' : '';
-                        paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}">${i}</a>`);
-                    }
-
-                    if (productPageVO.next) {
-                        paginationContainer.append('<a href="#" class="pagination-group">다음 ▶</a>');
-                    }
-
-                    // alert("데이터가 성공적으로 갱신되었습니다.");
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert("Error: " + textStatus + ", " + errorThrown);
-                    console.log(jqXHR.responseText);
-                }
+                });
 
             });
 
-        });
 
+            // table tr click and modal open
+            $("#wonjae tr").off('click').on('click', function (event) {
+                event.stopPropagation();
+                if (!$(event.target).is(':last-child')) {
+                    console.log("클릭")
+                    let tr = $(this);
+                    let td = tr.children();
+                    let productImgSrc = td.eq(6).find('img').attr('src') ?? '/static/productImg/default/defaultImage.png';
 
+                    $("#Result2").html("데이터 : " + productImgSrc);
 
-
-        // table tr click and modal open
-        $("#wonjae tr").off('click').on('click', function (event) {
-            event.stopPropagation();
-            if (!$(event.target).is(':last-child')) {
-                console.log("클릭")
-                let tr = $(this);
-                let td = tr.children();
-                let productImgSrc = td.eq(6).find('img').attr('src') ?? '/static/productImg/default/defaultImage.png';
-
-                $("#Result2").html("데이터 : " + productImgSrc);
-
-                $('#modModalNum').val(td.eq(0).text());
-                $('#modModalCode').val(td.eq(1).text());
-                $('#modModalProductName').val(td.eq(2).text());
-                $('#modModalSalePrice').val(td.eq(3).text());
-                $('#modModalPrice').val(td.eq(4).text());
-                $('#modModalCategory').val(td.eq(5).text().trim());
-                $('#modModalExplain').val(td.eq(7).text());
-                $('#modModalCompanyCode').val(td.eq(8).text());
-                $('#modModalImg').attr('src', productImgSrc).on('error', function () {
-                    // defaultImage
-                    $(this).attr('src', '/static/productImg/default/defaultImage.png');
-                }).show();
-                $('#tableModal').show();
-            }
-        });
-
-        // product delete(modal)
-        $('#delModal').off('click').on('click', function (event) {
-            // event.stopPropagation();
-            // event.preventDefault();
-            let num = $('#modModalNum').val();
-            $.ajax({
-                type: 'post',
-                url: 'productdel',
-                data: ({num: num}),
-                datatype: 'json',
-                success: function (response) {
-                    $('#tableModal').hide();
-                    location.reload();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert("Error: " + textStatus + ", " + errorThrown);
-                    console.log(jqXHR.responseText);
+                    $('#modModalNum').val(td.eq(0).text());
+                    $('#modModalCode').val(td.eq(1).text());
+                    $('#modModalProductName').val(td.eq(2).text());
+                    $('#modModalSalePrice').val(td.eq(3).text());
+                    $('#modModalPrice').val(td.eq(4).text());
+                    $('#modModalCategory').val(td.eq(5).text().trim());
+                    $('#modModalExplain').val(td.eq(7).text());
+                    $('#modModalCompanyCode').val(td.eq(8).text());
+                    $('#modModalImg').attr('src', productImgSrc).on('error', function () {
+                        // defaultImage
+                        $(this).attr('src', '/static/productImg/default/defaultImage.png');
+                    }).show();
+                    $('#tableModal').show();
                 }
-            })
-        })
+            });
 
-        // product delete(checkbox)
-        $('#delCheck').off('click').on('click', function (event) {
-            console.log("click")
-            let checkedList = [];
-            console.log("배열")
-            // $('.check').each(function () {
-            //     if ($(this).is(':checked')) {
-            //         checkedList.push($(this).val());
-            //     }
-            // });
-            // console.log(checkedList);
-            // $.ajax({
-            //     type: 'post',
-            //     url: 'productdel',
-            let check = document.querySelectorAll('input[class=check]:checked');
-            console.log("체크")
-            check.forEach((checkbox) => {
-                console.log("체크1")
-                let tr = $(checkbox).closest('tr');
-                let td = tr.children();
-                let num = td.eq(0).text();
-                num = parseInt(num);
-                checkedList.push(num);
-                console.log("add")
+            // product delete(modal)
+            $('#delModal').off('click').on('click', function (event) {
+                // event.stopPropagation();
+                // event.preventDefault();
+                let num = $('#modModalNum').val();
+                $.ajax({
+                    type: 'post',
+                    url: 'productdel',
+                    data: ({num: num}),
+                    datatype: 'json',
+                    success: function (response) {
+                        $('#tableModal').hide();
+                        location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + textStatus + ", " + errorThrown);
+                        console.log(jqXHR.responseText);
+                    }
+                })
             })
-            $.ajax({
-                type: 'post',
-                url: 'productdel',
-                data: {num: checkedList},
-                traditional: true,
-                datatype: 'json',
-                success: function (response) {
-                    // $('#tableModal').hide();
-                    console.log("success")
-                    location.reload();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert("Error: " + textStatus + ", " + errorThrown);
-                    console.log(jqXHR.responseText);
-                }
-            })
-        })
-    });
 
-    // var doubleSubmit = false;
-    // if(doubleSubmit) {
-    //     alert("처리중");
-    //     return false;
-    // } else {
+            // product delete(checkbox)
+            $('#delCheck').off('click').on('click', function (event) {
+                console.log("click")
+                let checkedList = [];
+                console.log("배열")
+                let check = document.querySelectorAll('input[class=check]:checked');
+                console.log("체크")
+                check.forEach((checkbox) => {
+                    console.log("체크1")
+                    let tr = $(checkbox).closest('tr');
+                    let td = tr.children();
+                    let num = td.eq(0).text();
+                    num = parseInt(num);
+                    checkedList.push(num);
+                    console.log("add")
+                })
+                $.ajax({
+                    type: 'post',
+                    url: 'productdel',
+                    data: {num: checkedList},
+                    traditional: true,
+                    datatype: 'json',
+                    success: function (response) {
+                        // $('#tableModal').hide();
+                        console.log("success")
+                        location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + textStatus + ", " + errorThrown);
+                        console.log(jqXHR.responseText);
+                    }
+                })
+            })
+        }
+    )
+    ;
+
     let formSubmitted = false;
 
     // product mod
@@ -1224,7 +1235,6 @@
     });
 
 
-
     // modal close
     // $('#exitModal').off('click').on('click', function () {
     //     console.log("닫기")
@@ -1240,7 +1250,6 @@
             $('#tableModal').hide();
         }
     })
-
 
 
     // checkbox controll
@@ -1261,15 +1270,14 @@
     //         allcheck.checked = false;
     //     }
     // });
-
     // checkbox controll 이벤트 위임
     document.querySelector("#mainTable").addEventListener('click', function (event) {
-        if(event.target.id === 'allCheck') {
+        if (event.target.id === 'allCheck') {
             const check = document.querySelectorAll('input[name=check]');
             check.forEach((checkbox) => {
                 checkbox.checked = allCheck.checked;
             })
-        }else if(event.target.className === 'check'){
+        } else if (event.target.className === 'check') {
             const allcheck = document.querySelector('input[id=allCheck]');
             const check = document.querySelectorAll('input[name=check]');
             const checked = document.querySelectorAll('input[name=check]:checked');

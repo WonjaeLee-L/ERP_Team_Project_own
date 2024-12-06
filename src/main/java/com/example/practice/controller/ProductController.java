@@ -7,6 +7,7 @@ import com.example.practice.vo.ProductVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -45,37 +47,93 @@ public class ProductController {
     private final ProductFile productFile;
     private final IF_ProductService productservice;
 
-    @RequestMapping("/aa")
-    public String dd() throws Exception {
-        return "list";
-    }
-
-    // 물품 등록 화면 이동
-    @RequestMapping("/storage")
-    public String storage() throws Exception {
-        return "storage";
-    }
-
-    // 물품 등록 ok
-    //, required = false
+    // 메서드명
+    // 물품 등록
     @PostMapping("/product")
-    public String product(@ModelAttribute ProductVO productVO, @RequestParam(value = "file") MultipartFile file) throws Exception {
+    public String getValid(@Valid @ModelAttribute ProductVO productVO, BindingResult result, @RequestParam(value = "file") MultipartFile file) throws Exception {
+        if (result.hasErrors()) {
+            return "MainProduct";
+        }
 
         try {
-            if (!file.isEmpty()) {
-                String saveFileName = productFile.saveFile(file);
-                productVO.setProduct_img(saveFileName);
-            } else {
-                if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
-                    productVO.setProduct_img("/static/productImg/default/defaultImage.png");
-                }
-            }
-            productservice.insertProduct(productVO);
-        } catch (NumberFormatException e) {
-            // 오류 처리
+            handleFileAndPersistProduct(productVO, file);
+        } catch (Exception e) {
+            return "ErrorPage";
         }
         return "redirect:productlistview";
     }
+
+    private void handleFileAndPersistProduct(ProductVO productVO, MultipartFile file) throws Exception {
+        if (!file.isEmpty()) {
+            String saveFileName = productFile.saveFile(file);
+            productVO.setProduct_img(saveFileName);
+        } else {
+            if (productVO.getProduct_img() == null || productVO.getProduct_img().isEmpty()) {
+                productVO.setProduct_img("/static/productImg/default/defaultImage.png");
+            }
+        }
+        productservice.insertProduct(productVO);
+    }
+
+    @PostMapping("/modProductInfo")
+    public String productMod(@Valid @ModelAttribute ProductVO productVO, BindingResult result,
+                             @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+        if (result.hasErrors()) {
+            return "MainProduct";
+        }
+
+        handleProductImageUpdate(productVO, file);
+        productservice.updateProduct(productVO);
+
+        return "redirect:productlistview";
+    }
+
+    private void handleProductImageUpdate(ProductVO productVO, MultipartFile file) throws Exception {
+        if (file != null && !file.isEmpty()) {
+            deleteExistingProductImage(productVO);
+
+            String absolutePath = productFile.saveFile(file);
+            if (absolutePath != null) {
+                String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+                productVO.setProduct_img(relativePath);
+            }
+        }
+    }
+
+    private void deleteExistingProductImage(ProductVO productVO) {
+        String existingImgPath = productVO.getProduct_img();
+        if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
+            File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
+            if (existingFile.exists()) {
+                existingFile.delete();
+            }
+        }
+    }
+
+
+//        @PostMapping("/modProductInfo")
+//        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+//
+//            if (file != null && !file.isEmpty()) {
+//                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
+//                String existingImgPath = productVO.getProduct_img();
+//                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
+//                    // 파일 삭제 로직 추가
+//                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
+//                    if (existingFile.exists()) {
+//                        existingFile.delete();
+//                    }
+//                }
+//
+//                String absolutePath = productFile.saveFile(file);
+//                if (absolutePath != null) {
+//                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+//                    productVO.setProduct_img(relativePath);
+//                }
+//            }
+//            productservice.updateProduct(productVO);
+//            return "redirect:productlistview";
+//        }
 
 
     //     물품 전체 리스트
@@ -105,11 +163,9 @@ public class ProductController {
     }
 
 
-
-
     // 물품 검색, 이름 다중 검색
     @GetMapping("/productoneview")
-    public String productOneView(@RequestParam("search") String product_name, @RequestParam("search1") String product_price, @RequestParam("search2") String category_code, @ModelAttribute ProductVO productVO, Model model) throws Exception {
+    public String productOneView(@RequestParam("search-name") String product_name, @RequestParam("search-price") String product_price, @RequestParam("search-category") String category_code, @ModelAttribute ProductVO productVO, Model model) throws Exception {
         List<ProductVO> productVOS = productservice.selectProduct(product_name, product_price, category_code);
         System.out.println("확인: " + product_name);
         model.addAttribute("productlist", productVOS);
@@ -117,19 +173,13 @@ public class ProductController {
         if (productVOS.isEmpty()) {
             return "redirect:productlistview";
         }
-
-
-        for (ProductVO productVO1 : productVOS) {
-            System.out.println(productVO1.toString());
-        };
-
         return "MainProduct";
     }
 
     // 리스트에서 물품 삭제
     @PostMapping("/productdel")
     public String del(@RequestParam("num[]") List<Integer> num) throws Exception {
-        System.out.println("controller in"+num);
+        System.out.println("controller in" + num);
         productservice.deleteProduct(num);
         System.out.println("controller out : check");
         return "redirect:productlistview";
@@ -142,7 +192,6 @@ public class ProductController {
         Map<String, Object> response = new HashMap<>();
 
         List<ProductVO> productVO = productservice.selectCategory(category_code);
-
 
         ProductPageVO productPageVO = new ProductPageVO();
         productPageVO.setStartPage(1);
@@ -175,35 +224,9 @@ public class ProductController {
 //        System.out.println(productVO.toString());
 
     }
+}
 
 
-
-        @PostMapping("/modProductInfo")
-        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-
-        System.out.println(productVO.toString());
-
-
-            if (file != null && !file.isEmpty()) {
-                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
-                String existingImgPath = productVO.getProduct_img();
-                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
-                    // 파일 삭제 로직 추가
-                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
-                    if (existingFile.exists()) {
-                        existingFile.delete();
-                    }
-                }
-
-                String absolutePath = productFile.saveFile(file);
-                if (absolutePath != null) {
-                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
-                    productVO.setProduct_img(relativePath);
-                }
-            }
-            productservice.updateProduct(productVO);
-            return "redirect:productlistview";
-        }}
 
 
 

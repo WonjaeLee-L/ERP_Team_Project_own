@@ -40,6 +40,7 @@
                 CATEGORY_CODE = #{oneSearch}
             </if>
         </where>
+        order by category_code
     </select>
 
     <delete id="deleteProduct" parameterType="java.util.List">
