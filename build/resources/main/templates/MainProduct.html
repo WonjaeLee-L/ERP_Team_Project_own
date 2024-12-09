@@ -1037,97 +1037,12 @@
             });
         });
 
-        // $("#searchBtn").on("click", function () {
-        //         var name = $("#search-name").val();
-        //         var price = $("#search-price").val().trim();
-        //         var category = $("#search-category").val();
-        //         var data = {
-        //             name: name,
-        //             price: price,
-        //             category: category
-        //         };
-        //         $.ajax({
-        //             url: "searchProduct",
-        //             type: "POST",
-        //             data: data,
-        //             dataType: "json",
-        //             success: function (data) {
-        //                 let tableBody = $("#wonjae");
-        //                 tableBody.empty();
-        //                 response.productlist.forEach(productVO => {
-        //
-        //                     let row = `
-        //                             <tr class="product_table" th:each="data_product : ${productVO}"
-        //     th:with="index=${(productPageVO.page - 1) * 10} + data_product.num">
-        //     <td class="product_table">
-        //         <input type="checkbox" class="check" name="num[]" id="check" value="check">
-        //     </td>
-        //     <td class="product_table" th:text="${data_product.num}" id="num">
-        //     </td>
-        //     <td class="product_table" th:text="${data_product.product_code}" id="proudct_code">
-        //     </td>
-        //     <td class="product_table" th:text="${data_product.product_name}" id="product_name"></td>
-        //     <td class="product_table" th:text="${data_product.sale_price}" id="sale_price"></td>
-        //     <td class="product_table" th:text="${data_product.price}" id="price"></td>
-        //     <td class="product_table">
-        //         <!--            category_code에 따라 변경하여 출력-->
-        //         <span th:switch="${data_product.category_code}" id="category_code">
-        //             <span th:case="9999">음식</span>
-        //             <span th:case="2222">의류</span>
-        //             <span th:case="*">기타</span>
-        //         </span>
-        //     </td>
-        //
-        //     <td class="product_table_img"><img th:src="@{${data_product.product_img}}" alt="no image" id="product_img"
-        //                                        style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
-        //     </td>
-        //     <td class="product_table" th:text="${data_product.product_explain}" id="product_explain"></td>
-        //     <td class="product_table" th:text="${data_product.company_code}" id="company_code"></td>
-        //
-        // </tr>
-        //                 `;
-        //                     tableBody.append(row);
-        //                 });
-        //
-        //                 let paginationContainer = $(".pagination-container");
-        //                 paginationContainer.empty();
-        //
-        //                 if (response.productPageVO.prev) {
-        //                     paginationContainer.append(`<a href="#" class="pagination-group" data-page="${currentPage - 1}">◀ 이전</a>`);
-        //                 }
-        //
-        //                 for (let i = response.productPageVO.startPage; i <= response.productPageVO.endPage; i++) {
-        //                     let activeClass = response.productPageVO.page == i ? 'active' : '';
-        //                     paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}" data-page="${i}">${i}</a>`);
-        //                 }
-        //
-        //                 if (response.productPageVO.next) {
-        //                     paginationContainer.append(`<a href="#" class="pagination-group" data-page="${currentPage + 1}">다음 ▶</a>`);
-        //                 }
-        //
-        //                 $('.pagination-link, .pagination-group').on('click', function (e) {
-        //                     e.preventDefault();
-        //                     currentPage = parseInt($(this).data('page'));
-        //                     loadProducts(currentPage, $("select[name='category_name']").val());
-        //                 });
-        //             },
-        //             error: function (jqXHR, textStatus, errorThrown) {
-        //                 alert("Error: " + textStatus + ", " + errorThrown);
-        //                 console.log(jqXHR.responseText);
-        //
-        //
-        //
-        //             }
-        //         })
-
                 // search(category)
-                var orderCategory = '1';
                 $("select[name='category_name']").on('click', function () {
                     $(this).parent().children('.category_name_arrow').children().toggleClass('hidden');
                 })
                 $("select[name='category_name']").change(function () {
                     var currentPage = 1;
-
                     function loadProducts(page, category_code) {
                         $.ajax({
                             type: 'post',
@@ -1139,15 +1054,15 @@
                                 tableBody.empty();
 
                                 response.productVOMod.forEach(productVO => {
-                                    let categoryCodeName;
-
-                                    if (productVO.category_code === '9999') {
-                                        categoryCodeName = '음식';
-                                    } else if (productVO.category_code === '2222') {
-                                        categoryCodeName = '의류';
-                                    } else {
-                                        categoryCodeName = '기타';
-                                    }
+                                    // let categoryCodeName;
+                                    //
+                                    // if (productVO.category_code === '9999') {
+                                    //     categoryCodeName = '음식';
+                                    // } else if (productVO.category_code === '2222') {
+                                    //     categoryCodeName = '의류';
+                                    // } else {
+                                    //     categoryCodeName = '기타';
+                                    // }
 
                                     let row = `
             //                         <tr class="product_table" th:each="data_product : ${productVO}"

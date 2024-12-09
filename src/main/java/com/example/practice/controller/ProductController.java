@@ -131,6 +131,7 @@ public class ProductController {
         } else {
             productVO.setProduct_name("");
         }
+
         if (!product_price.isEmpty()) {
             productVO.setSale_price(Integer.parseInt(product_price));
         } else {

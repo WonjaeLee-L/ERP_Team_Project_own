@@ -50,7 +50,7 @@
         SELECT *
         FROM product
         <where>
-            <if test='category_code != null or category_code != ""'>
+            <if test='category_code != null and !category_code.isEmpty()'>
                 <choose>
                     <when test='category_code == "all"'>
                     </when>
@@ -58,7 +58,7 @@
                         CATEGORY_CODE NOT IN ('9999', '2222')
                     </when>
                     <otherwise>
-                        CATEGORY_CODE = #{category_code}
+                        CATEGORY_CODE = #{category_code, jdbcType=VARCHAR}
                     </otherwise>
                 </choose>
             </if>
