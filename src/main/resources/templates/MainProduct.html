@@ -329,29 +329,43 @@
     /*search, add 관련*/
     .search-wrap {
         /*margin: 30px;*/
-        width: 300px;
-        height: 60px;
-        background-color: #c8e6c9; /* 마우스 오버 시 짙은 초록색 배경 */
+        /*width: 300px;*/
+        /*height: 60px;*/
+        /*background-color: #c8e6c9; !* 마우스 오버 시 짙은 초록색 배경 *!*/
+        /*border-radius: 30px;*/
+        display: flex;
+        align-items: center;
+        background-color: #c8e6c9;
         border-radius: 30px;
+        padding: 5px;
+        max-width: 500px;
     }
 
-    .search-wrap .search-form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60px;
-    }
+    /*.search-wrap .search-form {*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    align-items: center;*/
+    /*    height: 60px;*/
+    /*}*/
 
     .search-wrap .search-form input[type=text] {
-        width: 200px;
-        height: 50px;
-        box-sizing: border-box;
-        border: transparent;
+        flex: 1;
+        border: none;
+        padding: 10px;
         background: transparent;
     }
 
     .search-wrap .search-form input:focus {
         outline: none;
+    }
+
+    .search-form button {
+        border: none;
+        background: transparent;
+    }
+
+    .search-form button i {
+        font-size: 30px;
     }
 
     input[type=text], input[type=number] {
@@ -364,15 +378,6 @@
 
     }
 
-    .search-wrap .search-form button {
-        border: none;
-        background: transparent;
-    }
-
-    .search-wrap .search-form button i {
-        font-size: 30px;
-    }
-
     .bottom-wrap-top {
         float: left;
         margin-left: 470px;
@@ -383,6 +388,7 @@
         /*margin-top: 50px;*/
     }
 
+    /* select box */
     .selectDiv .arrow {
         position: absolute;
         top: 0;
@@ -396,8 +402,6 @@
         /*text-align: center;*/
     }
 
-    /* select box */
-
     .selectDiv {
         position: relative;
     }
@@ -405,7 +409,7 @@
     select:focus {
         outline: none;
     }
-    
+
     .selectDiv .select_category {
         background-color: #d0f0c0;
         -o-appearance: none;
@@ -430,22 +434,47 @@
         cursor: pointer;
     }
 
-    /*.selectDiv .category_name_arrow img {*/
-    /*    width: 70%;*/
-    /*    transition: .3s;*/
-    /*}*/
-
-    /*.selectDiv .selectList:focus .category_name_arrow img {*/
-    /*    transform: rotate(180deg);*/
-    /*}*/
-
     .selectList {
         background-color: #c8e6c9;
         color: #388e3c;
         padding: 3px 0;
     }
 
-    /* 모달 창 꾸미기*/
+    /* 체크박스 */
+
+    input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    #allCheck {
+        margin: 0;
+        position: relative;
+    }
+
+    .modalbtn, .pagination-group, .btn-primary {
+        margin: 0 5px;
+    }
+
+
+    .pagination-link {
+        color: #333;
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+    }
+
+    .pagination-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .pagination-link:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+    /* 모달 창 꾸미기 */
     .modal-dialog {
         max-width: 800px;
     }
@@ -486,6 +515,36 @@
         display: none;
     }
 
+    /* footer */
+    .footer-actions input[type="text"] {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        min-width: 100px;
+    }
+
+    .footer-actions button, .footer-actions .btn-primary {
+        margin: 0 5px;
+    }
+
+    .footer-actions .pagination-group, .footer-actions .pagination-link {
+        padding: 5px 10px;
+        margin: 0 2px;
+        text-decoration: none;
+        color: #333;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background-color: white;
+    }
+
+    .footer-actions .pagination-link.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .footer-actions .pagination-link:hover:not(.active) {
+        background-color: #ddd;
+    }
 
 </style>
 <body>
@@ -766,7 +825,9 @@
     <table class="product_table" id="mainTable">
         <thead>
         <tr class="product_table_th">
-            <th class="product_table">상품 번호<img src="" alt="" style="width: 20px" height="20px"></th>
+            <!--            <label for="allCheck">-->
+            <th class="product_table"><input type="checkbox" id="allCheck">선택</label></th>
+            <th class="product_table">상품 번호</th>
             <th class="product_table">상품 코드</th>
             <th class="product_table">상품 이름</th>
             <th class="product_table">공급 가격</th>
@@ -774,31 +835,33 @@
             <th class="product_table">
                 <form>
                     <div class="selectDiv">
-                        <select name="category_name" class="select_category" style= "border: none">
+                        <select name="category_name" class="select_category" style="border: none">
                             <option value="none" class="selectList" selected disabled>상품분류</option>
                             <option value="all" class="selectList">전체</option>
                             <option value="9999" class="selectList" id="food">음식</option>
                             <option value="2222" class="selectList" id="clothes">의류</option>
+                            <option value="other" class="selectList" id="others">기타</option>
                         </select>
-                        <span class="category_name_arrow arrow"><img class="hidden" src="../static/productImg/default/free-icon-down-arrow-down.png">
-                            <!--                            <span class="category_name_arrow arrow">-->
-                                <img src="../static/productImg/default/free-icon-down-arrow-up.png">
-                            <!--                        </span>-->
+                        <span class="category_name_arrow arrow"><img class="hidden"
+                                                                     src="../static/productImg/default/free-icon-down-arrow-down.png"></span>
+                        <img src="../static/productImg/default/free-icon-down-arrow-up.png">
                     </div>
                 </form>
             </th>
             <th class="product_table">상품 사진</th>
             <th class="product_table">상품 설명</th>
             <th class="product_table">회사 코드</th>
-            <th class="product_table"><label for="allCheck"><input type="checkbox" id="allCheck">선택</label></th>
+
         </tr>
         </thead>
 
         <tbody id="wonjae">
         <tr class="product_table" th:each="data_product : ${productlist}"
             th:with="index=${(productPageVO.page -1)*10} + data_product.num">
+            <td class="product_table">
+                <input type="checkbox" class="check" name="num[]" id="check" value="check">
+            </td>
             <td class="product_table" th:text="${data_product.num}" id="num">
-                </a>
             </td>
             <td class="product_table" th:text="${data_product.product_code}" id="proudct_code">
             </td>
@@ -819,73 +882,196 @@
             </td>
             <td class="product_table" th:text="${data_product.product_explain}" id="product_explain"></td>
             <td class="product_table" th:text="${data_product.company_code}" id="company_code"></td>
-            <td class="product_table">
-                <!--                <label>-->
-                <input type="checkbox" class="check" name="check" value="check">
-                <!--                </label>-->
-            </td>
+
         </tr>
         </tbody>
         <tfoot>
-        <tr class="product_table_tf">
-            <td class="product_table_tf" colspan="3">3</td>
-            <td class="product_table_tf" colspan="3">3</td>
-            <td class="product_table_tf" colspan="3">3</td>
-            <td class="product_table_tf">
-                <button type="button" id="delCheck">선택 삭제</button>
-            </td>
-        </tr>
         <tr>
             <td colspan="10">
-                <div class="pagination-container">
-                    <!-- 이전 페이지 그룹 -->
-                    <a th:if="${productPageVO?.prev}"
-                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                       class="pagination-group">
-                        <span>◀ 이전</span>
-                    </a>
+                <div class="footer-actions"
+                     style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <!-- 선택 삭제 버튼 -->
+                    <button type="button" id="delCheck" class="modalbtn">선택 삭제</button>
 
-                    <!-- 페이지 번호 순회 -->
-                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">
-                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                           th:text="${idx}"
-                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">
-                        </a>
+
+                    <div class="search-wrap" style="display: flex; align-items: flex-start; background-color: black;">
+                        <form action="productoneview" method="get" class="search-form"
+                              style="display: flex; gap: 10px; align-items: flex-start;">
+                            <input type="text" id="search-name" name="search-name" placeholder="상품명">
+                            <input type="text" id="search-price" name="search-price" placeholder="가격">
+                            <input type="text" id="search-category" name="search-category" placeholder="카테고리명">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </form>
+                        <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct"
+                                style="margin-left: 10px;">
+                            물품 등록
+                        </button>
                     </div>
 
-                    <!-- 다음 페이지 그룹 -->
-                    <a th:if="${productPageVO?.next}"
-                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
-                       class="pagination-group">
-                        <span>다음 ▶</span>
-                    </a>
+                    <div>
+                        <div class="pagination-container" style="display: inline-flex; gap: 5px;">
+                            <a th:if="${productPageVO?.prev}"
+                               th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                               class="pagination-group">◀ 이전</a>
+                            <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">
+                                <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                                   th:text="${idx}"
+                                   th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">
+                                </a>
+                            </div>
+                            <a th:if="${productPageVO?.next}"
+                               th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+                               class="pagination-group">다음 ▶</a>
+                        </div>
+                        <a href="/excelDown.do" class="btn btn-primary" style="margin-left: 10px;">엑셀 다운로드</a>
+                    </div>
                 </div>
+                <!-- 페이지 네비게이션 -->
+                <!--                    <div class="pagination-container">-->
+                <!--                        <a th:if="${productPageVO?.prev}"-->
+                <!--                           th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+                <!--                           class="pagination-group">◀ 이전</a>-->
+                <!--                        <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+                <!--                            <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+                <!--                               th:text="${idx}"-->
+                <!--                               th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+                <!--                            </a>-->
+                <!--                        </div>-->
+                <!--                        <a th:if="${productPageVO?.next}"-->
+                <!--                           th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+                <!--                           class="pagination-group">다음 ▶</a>-->
+                <!--                    </div>-->
+
+                <!--                    &lt;!&ndash; 엑셀 다운로드 &ndash;&gt;-->
+                <!--                    <a href="/excelDown.do" class="btn btn-primary">엑셀 다운로드</a>-->
+                <!--                </div>-->
             </td>
         </tr>
         </tfoot>
+        <!--        <tfoot>-->
+        <!--        <tr class="product_table_tf">-->
+        <!--            <td class="product_table_tf" colspan="9">-->
+        <!--                <div style="text-align: right;">-->
+        <!--                    <button type="button" id="delCheck" class="modalbtn">선택 삭제</button>-->
+        <!--                </div>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td colspan="10">-->
+        <!--                <div class="pagination-container">-->
+        <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+        <!--                    <a th:if="${productPageVO?.prev}"-->
+        <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                       class="pagination-group">-->
+        <!--                        <span>◀ 이전</span>-->
+        <!--                    </a>-->
+
+        <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+        <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+        <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                           th:text="${idx}"-->
+        <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+        <!--                        </a>-->
+        <!--                    </div>-->
+
+        <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+        <!--                    <a th:if="${productPageVO?.next}"-->
+        <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                       class="pagination-group">-->
+        <!--                        <span>다음 ▶</span>-->
+        <!--                    </a>-->
+        <!--                </div>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+        <!--        </tfoot>-->
+        <!--        <tfoot>-->
+        <!--        <tr class="product_table_tf">-->
+        <!--            <td class="product_table_tf" colspan="3">3</td>-->
+        <!--            <td class="product_table_tf" colspan="3">3</td>-->
+        <!--            <td class="product_table_tf" colspan="3">3</td>-->
+        <!--            <td class="product_table_tf">-->
+        <!--                <button type="button" id="delCheck">선택 삭제</button>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td colspan="10">-->
+        <!--                <div class="pagination-container">-->
+        <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+        <!--                    <a th:if="${productPageVO?.prev}"-->
+        <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                       class="pagination-group">-->
+        <!--                        <span>◀ 이전</span>-->
+        <!--                    </a>-->
+
+        <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+        <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+        <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                           th:text="${idx}"-->
+        <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+        <!--                        </a>-->
+        <!--                    </div>-->
+
+        <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+        <!--                    <a th:if="${productPageVO?.next}"-->
+        <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+        <!--                       class="pagination-group">-->
+        <!--                        <span>다음 ▶</span>-->
+        <!--                    </a>-->
+        <!--                </div>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+        <!--        </tfoot>-->
     </table>
 
 
     <!-- body 하단. 검색 input 및 물품 등록 button -->
-    <div class="bottom-wrap-top">
-        <div class="search-wrap">
-            <form action="productoneview" method="get" class="search-form">
-                <label for="search-name" class="hide">상품명</label>
-                <input type="text" id="search-name" name="search-name" placeholder="상품명">
-                <label for="search-price" class="hide">가격</label>
-                <input type="text" id="search-price" name="search-price" placeholder="가격">
-                <label for="search-category" class="hide">카테고리명</label>
-                <input type="text" id="search-category" name="search-category" placeholder="카테고리명">
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </form>
-        </div>
-        <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">
-            물품 등록
-        </button>
-    </div>
+    <!--    <div class="control-container">-->
+    <!--        &lt;!&ndash; 검색 및 물품 등록 버튼 영역 &ndash;&gt;-->
+    <!--        <div class="bottom-wrap-top">-->
+    <!--            <div class="search-wrap">-->
+    <!--                <form action="productoneview" method="get" class="search-form">-->
+    <!--                    <label for="search-name" class="hide">상품명</label>-->
+    <!--                    <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                    <label for="search-price" class="hide">가격</label>-->
+    <!--                    <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                    <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                    <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                    <button type="submit">-->
+    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                    </button>-->
+    <!--                </form>-->
+    <!--            </div>-->
+    <!--            <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--                물품 등록-->
+    <!--            </button>-->
+    <!--        </div>-->
 
+    <!--        &lt;!&ndash; 엑셀 다운로드 영역 &ndash;&gt;-->
+    <!--        <div id="Result3" style="margin-top: 15px;">-->
+    <!--            <a href="/excelDown.do" class="btn btn-primary">엑셀 다운로드</a>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="bottom-wrap-top">-->
+    <!--        <div class="search-wrap">-->
+    <!--            <form action="productoneview" method="get" class="search-form">-->
+    <!--                <label for="search-name" class="hide">상품명</label>-->
+    <!--                <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                <label for="search-price" class="hide">가격</label>-->
+    <!--                <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                <button type="submit">-->
+    <!--                    <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                </button>-->
+    <!--            </form>-->
+    <!--        </div>-->
+    <!--        <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--            물품 등록-->
+    <!--        </button>-->
+    <!--    </div>-->
+    <!--    <div id="Result3"><a href="/excelDown.do">ssssss</a></div>-->
 
     <table class="product_table">
         <tr class="product_table" th:each="search_product : ${productVOS}">
@@ -917,6 +1103,7 @@
 
     <div id="Result1"></div>
     <div id="Result2"></div>
+
     <!-- ********* body 종료 ********* -->
 
 </Section>
@@ -1003,78 +1190,87 @@
                 });
             });
 
-            // select box에서 선택한 카테고리에 따른 검색
+            // search(category)
             var orderCategory = '1';
             $("select[name='category_name']").on('click', function () {
                 $(this).parent().children('.category_name_arrow').children().toggleClass('hidden');
             })
             $("select[name=category_name]").change(function () {
-                var code = $(this).val();
-                $.ajax({
-                    type: 'post',
-                    url: 'productmod',
-                    data: ({category_code: code}),
-                    datatype: 'json',
-                    success: function (response) {
+                var currentPage = 1;
 
-                        let tableBody = $("#wonjae");
-                        // 기존 콘텐츠 비우기
-                        tableBody.empty();
+                function loadProducts(page, category_code) {
+                    $.ajax({
+                        type: 'post',
+                        url: 'selectcategory',
+                        data: {category_code: category_code, page: page, size: 10},
+                        datatype: 'json',
+                        success: function (response) {
+                            let tableBody = $("#wonjae");
+                            tableBody.empty();
 
-                        response.productVOMod.forEach(productVO => {
+                            response.productVOMod.forEach(productVO => {
+                                let category_name;
 
-                            let category_name;
+                                if (productVO.category_code === '9999') {
+                                    category_name = '음식';
+                                } else if (productVO.category_code === '2222') {
+                                    category_name = '의류';
+                                } else {
+                                    category_name = '기타';
+                                }
 
-                            if (productVO.category_code === '9999') {
-                                category_name = '음식';
-                            } else if (productVO.category_code === '2222') {
-                                category_name = '의류';
-                            } else {
-                                category_name = '기타';
+                                let row = `
+                            <tr class="product_table">
+                                <td class="product_table">${productVO.num}</td>
+                                <td class="product_table">${productVO.product_code}</td>
+                                <td class="product_table">${productVO.product_name}</td>
+                                <td class="product_table">${productVO.sale_price}</td>
+                                <td class="product_table">${productVO.price}</td>
+                                <td class="product_table">${category_name}</td>
+                                <td class="product_table"><img src="${productVO.product_img}" alt="no image" style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
+                                <td class="product_table">${productVO.product_explain}</td>
+                                <td class="product_table">${productVO.company_code}</td>
+                            </tr>
+                        `;
+                                tableBody.append(row);
+                            });
+
+                            let paginationContainer = $(".pagination-container");
+                            paginationContainer.empty();
+
+                            if (response.productPageVO.prev) {
+                                paginationContainer.append(`<a href="#" class="pagination-group" data-page="${currentPage - 1}">◀ 이전</a>`);
                             }
 
-                            let row = `
-        <tr class="product_table">
-            <td class="product_table">${productVO.num}</td>
-            <td class="product_table">${productVO.product_code}</td>
-            <td class="product_table">${productVO.product_name}</td>
-            <td class="product_table">${productVO.sale_price}</td>
-            <td class="product_table">${productVO.price}</td>
-<!--            <td>${productVO.category_code}</td>-->
-            <td class="product_table">${category_name}</td>
-            <td class="product_table"><img src="${productVO.product_img}" alt="no image" style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
-                       <td class="product_table">${productVO.product_explain}</td>
-            <td class="product_table">${productVO.company_code}</td>
-        </tr>
-    `;
-                            tableBody.append(row);
-                        });
-                        // 페이징 업데이트
-                        let paginationContainer = $(".pagination-container");
-                        paginationContainer.empty();
+                            for (let i = response.productPageVO.startPage; i <= response.productPageVO.endPage; i++) {
+                                let activeClass = response.productPageVO.page == i ? 'active' : '';
+                                paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}" data-page="${i}">${i}</a>`);
+                            }
 
-                        let productPageVO = response.productPageVO;
-                        if (productPageVO.prev) {
-                            paginationContainer.append('<a href="#" class="pagination-group">◀ 이전</a>');
+                            if (response.productPageVO.next) {
+                                paginationContainer.append(`<a href="#" class="pagination-group" data-page="${currentPage + 1}">다음 ▶</a>`);
+                            }
+
+                            $('.pagination-link, .pagination-group').on('click', function (e) {
+                                e.preventDefault();
+                                currentPage = parseInt($(this).data('page'));
+                                loadProducts(currentPage, $("select[name='category_name']").val());
+                            });
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert("Error: " + textStatus + ", " + errorThrown);
+                            console.log(jqXHR.responseText);
                         }
+                    });
+                }
 
-                        for (let i = productPageVO.startPage; i <= productPageVO.endPage; i++) {
-                            let activeClass = productPageVO.page == i ? 'active' : '';
-                            paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}">${i}</a>`);
-                        }
-
-                        if (productPageVO.next) {
-                            paginationContainer.append('<a href="#" class="pagination-group">다음 ▶</a>');
-                        }
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        alert("Error: " + textStatus + ", " + errorThrown);
-                        console.log(jqXHR.responseText);
-                    }
-
+                $("select[name=category_name]").change(function () {
+                    currentPage = 1;
+                    loadProducts(currentPage, $(this).val());
                 });
 
+                // 초기 로드
+                loadProducts(currentPage, $("select[name='category_name']").val());
             });
 
 
@@ -1110,11 +1306,13 @@
                 // event.stopPropagation();
                 // event.preventDefault();
                 let num = $('#modModalNum').val();
+                let numArray = [parseInt(num)];
                 $.ajax({
                     type: 'post',
                     url: 'productdel',
-                    data: ({num: num}),
-                    datatype: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({num: numArray}),
+                    // datatype: 'json',
                     success: function (response) {
                         $('#tableModal').hide();
                         location.reload();
@@ -1131,23 +1329,26 @@
                 console.log("click")
                 let checkedList = [];
                 console.log("배열")
-                let check = document.querySelectorAll('input[class=check]:checked');
+                let check = document.querySelectorAll('input[id=check]:checked');
                 console.log("체크")
                 check.forEach((checkbox) => {
-                    console.log("체크1")
-                    let tr = $(checkbox).closest('tr');
-                    let td = tr.children();
-                    let num = td.eq(0).text();
-                    num = parseInt(num);
-                    checkedList.push(num);
-                    console.log("add")
-                })
+                        console.log("체크1")
+                        let tr = $(checkbox).closest('tr');
+                        let td = tr.children();
+                        let num = td.eq(0).text().trim();
+                        num = parseInt(num);
+                        checkedList.push(num);
+                        console.log("add");
+                        console.log(checkedList);
+                    }
+                )
                 $.ajax({
                     type: 'post',
                     url: 'productdel',
-                    data: {num: checkedList},
-                    traditional: true,
-                    datatype: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({'num': checkedList}),
+                    // traditional: true,
+                    // datatype: 'json',
                     success: function (response) {
                         // $('#tableModal').hide();
                         console.log("success")
@@ -1163,21 +1364,20 @@
     )
     ;
 
-    let formSubmitted = false;
+    // let formSubmitted = false;
 
     // product mod
     $('#modProduct').off('click').on('click', function (event) {
         // event.preventDefault()
-        // doubleSubmit = true;
-        if (formSubmitted) {
-            return false;
-        }
-        formSubmitted = true;
+
+        // if (formSubmitted) {
+        //     return false;
+        // }
+        // formSubmitted = true;
 
         let formData = new FormData();
         let updatedImgFile = document.querySelector('#modModalFile').files[0];
 
-        // 새로운 데이터를 formData에 append
         formData.append("num", parseInt($('#modModalNum').val()));
         formData.append("product_code", $('#modModalCode').val());
         formData.append("product_name", $('#modModalProductName').val());
@@ -1199,26 +1399,13 @@
             data: formData,
             contentType: false,
             processData: false,
-            // success: function (response) {
-            // $('#modModalImg').attr('src', productImgSrc).on('error', function () {
-            //     $(this).attr('src', '/static/productImg/default/defaultImage.png');
-            // }).show();
 
-            //콜백함수
             success: function (response) {
-                // let modFileName = document.querySelector('#modfilename').value;
-                // $('#modModalImg').attr('src', modFileName + '?t=' + new Date().getTime()).on('error', function () {
-                //     $(this).attr('src', '/static/productImg/default/defaultImage.png');
-                // }).show();
-
-                // $('#modModalImg').attr('src', productImgSrc + '?t=' + new Date().getTime()).on('error', function () {
-                //     $(this).attr('src', '/static/productImg/default/defaultImage.png');
-                // }).show();
                 let newurl = response.productImg;
                 $('#modModalImg').attr('src', newurl + '?t=' + new Date().getTime()).on('error', function () {
                     $(this).attr('src', '/static/productImg/default/defaultImage.png');
                 }).show();
-                formSubmitted = false;
+                // formSubmitted = false;
                 // location.reload();
                 $('#tableModal').hide();
                 // return this.url;
@@ -1228,7 +1415,7 @@
                 console.error("수정 실패", textStatus, errorThrown);
                 console.log("서버 응답:", jqXHR.responseText);
                 // 필요 확인
-                formSubmitted = false;
+                // formSubmitted = false;
             }
         });
         return true;
@@ -1273,14 +1460,14 @@
     // checkbox controll 이벤트 위임
     document.querySelector("#mainTable").addEventListener('click', function (event) {
         if (event.target.id === 'allCheck') {
-            const check = document.querySelectorAll('input[name=check]');
+            const check = document.querySelectorAll('input[id=check]');
             check.forEach((checkbox) => {
                 checkbox.checked = allCheck.checked;
             })
         } else if (event.target.className === 'check') {
             const allcheck = document.querySelector('input[id=allCheck]');
-            const check = document.querySelectorAll('input[name=check]');
-            const checked = document.querySelectorAll('input[name=check]:checked');
+            const check = document.querySelectorAll('input[id=check]');
+            const checked = document.querySelectorAll('input[id=check]:checked');
             if (check.length === checked.length) {
                 allcheck.checked = true;
             } else {

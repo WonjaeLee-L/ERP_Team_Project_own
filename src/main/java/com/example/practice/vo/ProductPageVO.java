@@ -2,28 +2,22 @@ package com.example.practice.vo;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 @Data
 public class ProductPageVO {
-    private int startNo; // page의 시작 글 번호
-    private int endNo; // page의 마지막 글 번호
-    private int perPageNum = 10; // 한 page당 게시글 수
+    private int startNo;
+    private int endNo;
+    private int perPageNum = 10;
     private Integer page;
-    // Integer(String을 저장하지만 int로 인식) : 웹에서 받은 페이지 정보(String)가 없으면 null인데 int는 null을
-    // 저장할 수 없다. 오류방지
-    // 현재 page
 
     @Setter(AccessLevel.PROTECTED)
-    private int totalCount; // 전체 게시글 수
-
-
-    private int endPage; // 페이지 그룹의 마지막 페이지 번호
-    private int startPage; // 페이지 그룹의 첫 페이지 번호(13페이지라면 11페이지)
-    private boolean prev; // 이전
-    private boolean next; // 다음
-    // 검색용 변수 2개 추가 >> paging을 할 때, 검색한 것을 가지고 페이지를 만들도록. 페이지 번호를 넘길 때, 검색어도 같이 넘겨야
-    // 그 뒤 페이지도 제대로 된 paging이 된다.
+    private int totalCount;
+    private int endPage;
+    private int startPage;
+    private boolean prev;
+    private boolean next;
     private String searchType;
     private String searchKeyword;
 
@@ -48,7 +42,7 @@ public class ProductPageVO {
             if (endPage != page) {
                 this.endNo = startNo + this.perPageNum - 1;
             } else {
-                this.endNo = startNo + this.totalCount % 10 - 1;
+                this.endNo = startNo + this.totalCount % perPageNum - 1;
             }
         } else {
             // 클릭한 page번호로 계산된 게시물수가 실제게시물개수 totalCount 작을때
@@ -66,4 +60,5 @@ public class ProductPageVO {
         this.totalCount = totalCount;
         calcPage();
     }
+
 }

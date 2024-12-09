@@ -5,38 +5,24 @@ import com.example.practice.service.IF_ProductService;
 import com.example.practice.vo.ProductPageVO;
 import com.example.practice.vo.ProductVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.boot.Banner;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 @Controller
@@ -48,7 +34,7 @@ public class ProductController {
     private final IF_ProductService productservice;
 
     // 메서드명
-    // 물품 등록
+    // 물품 등록_1
     @PostMapping("/product")
     public String getValid(@Valid @ModelAttribute ProductVO productVO, BindingResult result, @RequestParam(value = "file") MultipartFile file) throws Exception {
         if (result.hasErrors()) {
@@ -63,6 +49,7 @@ public class ProductController {
         return "redirect:productlistview";
     }
 
+    // 물품 등록_2
     private void handleFileAndPersistProduct(ProductVO productVO, MultipartFile file) throws Exception {
         if (!file.isEmpty()) {
             String saveFileName = productFile.saveFile(file);
@@ -75,6 +62,7 @@ public class ProductController {
         productservice.insertProduct(productVO);
     }
 
+    // 물품 수정_1
     @PostMapping("/modProductInfo")
     public String productMod(@Valid @ModelAttribute ProductVO productVO, BindingResult result,
                              @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
@@ -88,6 +76,7 @@ public class ProductController {
         return "redirect:productlistview";
     }
 
+    // 물품 수정_2
     private void handleProductImageUpdate(ProductVO productVO, MultipartFile file) throws Exception {
         if (file != null && !file.isEmpty()) {
             deleteExistingProductImage(productVO);
@@ -100,6 +89,7 @@ public class ProductController {
         }
     }
 
+    // 물품 수정_3
     private void deleteExistingProductImage(ProductVO productVO) {
         String existingImgPath = productVO.getProduct_img();
         if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
@@ -111,32 +101,7 @@ public class ProductController {
     }
 
 
-//        @PostMapping("/modProductInfo")
-//        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-//
-//            if (file != null && !file.isEmpty()) {
-//                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
-//                String existingImgPath = productVO.getProduct_img();
-//                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
-//                    // 파일 삭제 로직 추가
-//                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
-//                    if (existingFile.exists()) {
-//                        existingFile.delete();
-//                    }
-//                }
-//
-//                String absolutePath = productFile.saveFile(file);
-//                if (absolutePath != null) {
-//                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
-//                    productVO.setProduct_img(relativePath);
-//                }
-//            }
-//            productservice.updateProduct(productVO);
-//            return "redirect:productlistview";
-//        }
-
-
-    //     물품 전체 리스트
+    // 상품 리스트
     @ResponseBody
     @GetMapping("/productlistview")
     public ModelAndView product(@ModelAttribute ProductPageVO productPageVO) throws Exception {
@@ -162,6 +127,68 @@ public class ProductController {
         return mv;
     }
 
+    // 엑셀 다운
+    @RequestMapping(value = "/excelDown.do")
+    public void excelDown(HttpServletResponse response, ProductPageVO productPageVO) throws Exception {
+
+        // 게시판 목록조회
+        if (productPageVO.getPage() == null) {
+            productPageVO.setPage(1);
+        }
+        productPageVO.setTotalCount(productservice.totalproductcount());
+
+        List<ProductVO> list = productservice.selectAll(productPageVO);
+
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("게시판");
+        Row row = null;
+        Cell cell = null;
+        int rowNo = 0;
+
+
+        CellStyle headStyle = wb.createCellStyle();
+        headStyle.setBorderTop(BorderStyle.THIN);
+        headStyle.setBorderBottom(BorderStyle.THIN);
+        headStyle.setBorderLeft(BorderStyle.THIN);
+        headStyle.setBorderRight(BorderStyle.THIN);
+        headStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.YELLOW.getIndex());
+        headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headStyle.setAlignment(HorizontalAlignment.CENTER);
+        CellStyle bodyStyle = wb.createCellStyle();
+        bodyStyle.setBorderTop(BorderStyle.THIN);
+        bodyStyle.setBorderBottom(BorderStyle.THIN);
+        bodyStyle.setBorderLeft(BorderStyle.THIN);
+        bodyStyle.setBorderRight(BorderStyle.THIN);
+
+        row = sheet.createRow(rowNo++);
+        cell = row.createCell(0);
+        cell.setCellStyle(headStyle);
+        cell.setCellValue("등록 번호");
+        cell = row.createCell(1);
+        cell.setCellStyle(headStyle);
+        cell.setCellValue("상품 이름");
+        cell = row.createCell(2);
+        cell.setCellStyle(headStyle);
+        cell.setCellValue("상품 가격");
+
+        for (ProductVO vo : list) {
+            row = sheet.createRow(rowNo++);
+            cell = row.createCell(0);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(vo.getNum());
+            cell = row.createCell(1);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(vo.getProduct_name());
+            cell = row.createCell(2);
+            cell.setCellStyle(bodyStyle);
+            cell.setCellValue(vo.getPrice());
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=test.xls");
+        wb.write(response.getOutputStream());
+        wb.close();
+    }
 
     // 물품 검색, 이름 다중 검색
     @GetMapping("/productoneview")
@@ -178,53 +205,47 @@ public class ProductController {
 
     // 리스트에서 물품 삭제
     @PostMapping("/productdel")
-    public String del(@RequestParam("num[]") List<Integer> num) throws Exception {
-        System.out.println("controller in" + num);
+    public ResponseEntity<String> del(@RequestBody Map<String, List<Integer>> payload) throws Exception {
+        List<Integer> num = payload.get("num");
+        System.out.println("controller in: " + num);
+
+        if (num == null || num.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid request: 'num' list is empty or null.");
+        }
         productservice.deleteProduct(num);
-        System.out.println("controller out : check");
-        return "redirect:productlistview";
+        return ResponseEntity.ok("Deletion successful");
     }
 
 
-    @PostMapping("/productmod")
+    @PostMapping("/selectcategory")
     @ResponseBody
-    public Map<String, Object> productMod(@RequestParam(value = "category_code", required = false) String category_code) throws Exception {
+    public Map<String, Object> selectCategory(@RequestParam(value = "category_code", required = false) String category_code, @RequestParam(value = "page", defaultValue = "1") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
         Map<String, Object> response = new HashMap<>();
-
-        List<ProductVO> productVO = productservice.selectCategory(category_code);
-
         ProductPageVO productPageVO = new ProductPageVO();
-        productPageVO.setStartPage(1);
-        productPageVO.setEndPage(2);
+        productPageVO.setPage(page);
+        productPageVO.setPerPageNum(size);
+        productPageVO.setTotalCount(productservice.totalproductcount());
+        int startNo = (page - 1) * size;
+        int endNo = startNo + size;
+        productPageVO.setStartNo(startNo);
+        productPageVO.setEndNo(endNo);
+        List<ProductVO> productVO = productservice.selectCategory(category_code, productPageVO);
+
+
+        for (ProductVO product : productVO) {
+            if (product.getProduct_img() == null || product.getProduct_img().isEmpty()) {
+                product.setProduct_img("/static/productImg/default/defaultImage.png");
+            }
+        }
 
         response.put("productVOMod", productVO);
         response.put("productPageVO", productPageVO);
         return response;
     }
-
-
-    @ResponseBody
-    @PostMapping(value = "/productlistview1", consumes = "multipart/form-data")
-    public void productModalView(@RequestParam("num") int num, @RequestParam("product_code") String product_code, @RequestParam("product_name") String product_name, @RequestParam("sale_price") int sale_price, @RequestParam("price") int price, @RequestParam("category_code") String category_code, @RequestParam("product_explain") String product_explain, @RequestParam("company_code") String company_code) throws Exception {
-//        @RequestParam("file") MultipartFile file,
-//        String filePath = productFile.saveFile(file);
-        ProductVO productVO = new ProductVO();
-        productVO.setNum(num);
-        productVO.setProduct_code(product_code);
-        productVO.setProduct_name(product_name);
-        productVO.setSale_price(sale_price);
-        productVO.setPrice(price);
-        productVO.setCategory_code(category_code);
-//        productVO.setProduct_img(filePath);
-//        productVO.setProduct_img(product_img);
-        productVO.setProduct_explain(product_explain);
-        productVO.setCompany_code(company_code);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValueAsString(productVO);
-//        System.out.println(productVO.toString());
-
-    }
 }
+
+
 
 
 

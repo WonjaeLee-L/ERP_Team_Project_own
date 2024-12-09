@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -16,7 +17,7 @@ public interface IF_ProductDao {
     public List<ProductVO> selectAll(ProductPageVO productpageVO) throws Exception;
     public void insertProduct(ProductVO productVO) throws Exception;
     public List<ProductVO> selectProduct(String product_name, String sale_price, String category_code) throws Exception;
-    public List<ProductVO> selectCategory(String oneSearch) throws Exception;
+    public List<ProductVO> selectCategory(Map<String, Object> param) throws Exception;
     public void deleteProduct(List<Integer> num) throws Exception;
     public void updateProduct(ProductVO productVO) throws Exception;
     public int productCount() throws Exception;

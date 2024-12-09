@@ -131,12 +131,6 @@
 <!--    </div>-->
 
 
-
-
-
-
-
-
 </body>
 <script>
     // var num = td.eq(0).text();
@@ -174,7 +168,7 @@
     // formData.append("category_code", category_code);
     // formData.append("product_explain", product_explain);
     // formData.append("company_code", company_code);
-//**************************************************************************
+    //**************************************************************************
     //     doubleSubmit = false;
     // }
 
@@ -222,12 +216,6 @@
     //         }
     //     });
     // })
-
-
-
-
-
-
 
 
     // $(document).ready(function () {
@@ -338,8 +326,6 @@
     //
     // }
     // });
-
-
 
 
     // ********************** controller
@@ -530,6 +516,53 @@
     //            }
     //        }
 
+    //    @ResponseBody
+    //    @PostMapping(value = "/productlistview1", consumes = "multipart/form-data")
+    //    public void productModalView(@RequestParam("num") int num, @RequestParam("product_code") String product_code, @RequestParam("product_name") String product_name, @RequestParam("sale_price") int sale_price, @RequestParam("price") int price, @RequestParam("category_code") String category_code, @RequestParam("product_explain") String product_explain, @RequestParam("company_code") String company_code) throws Exception {
+    /// /        @RequestParam("file") MultipartFile file,
+    /// /        String filePath = productFile.saveFile(file);
+    //        ProductVO productVO = new ProductVO();
+    //        productVO.setNum(num);
+    //        productVO.setProduct_code(product_code);
+    //        productVO.setProduct_name(product_name);
+    //        productVO.setSale_price(sale_price);
+    //        productVO.setPrice(price);
+    //        productVO.setCategory_code(category_code);
+    /// /        productVO.setProduct_img(filePath);
+    /// /        productVO.setProduct_img(product_img);
+    //        productVO.setProduct_explain(product_explain);
+    //        productVO.setCompany_code(company_code);
+    //        ObjectMapper objectMapper = new ObjectMapper();
+    //        objectMapper.writeValueAsString(productVO);
+    ////        System.out.println(productVO.toString());
+    //
+    //    }
+    //}
+
+    //        @PostMapping("/modProductInfo")
+    //        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+    //
+    //            if (file != null && !file.isEmpty()) {
+    //                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
+    //                String existingImgPath = productVO.getProduct_img();
+    //                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
+    //                    // 파일 삭제 로직 추가
+    //                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
+    //                    if (existingFile.exists()) {
+    //                        existingFile.delete();
+    //                    }
+    //                }
+    //
+    //                String absolutePath = productFile.saveFile(file);
+    //                if (absolutePath != null) {
+    //                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+    //                    productVO.setProduct_img(relativePath);
+    //                }
+    //            }
+    //            productservice.updateProduct(productVO);
+    //            return "redirect:productlistview";
+    //        }
+
 
     //        if (file != null && !file.isEmpty()) {
     //            String saveFileName = productFile.saveFile(file);
@@ -563,6 +596,73 @@
     //    }
     //}
 
+    //                 var code = $(this).val();
+    //                 $.ajax({
+    //                     type: 'post',
+    //                     url: 'selectcategory',
+    //                     data: ({category_code: code}),
+    //                     datatype: 'json',
+    //                     success: function (response) {
+    //
+    //                         let tableBody = $("#wonjae");
+    //                         // 기존 콘텐츠 비우기
+    //                         tableBody.empty();
+    //
+    //                         response.productVOMod.forEach(productVO => {
+    //
+    //                             let category_name;
+    //
+    //                             if (productVO.category_code === '9999') {
+    //                                 category_name = '음식';
+    //                             } else if (productVO.category_code === '2222') {
+    //                                 category_name = '의류';
+    //                             } else {
+    //                                 category_name = '기타';
+    //                             }
+    //
+    //                             let row = `
+    //         <tr class="product_table">
+    //             <td class="product_table">${productVO.num}</td>
+    //             <td class="product_table">${productVO.product_code}</td>
+    //             <td class="product_table">${productVO.product_name}</td>
+    //             <td class="product_table">${productVO.sale_price}</td>
+    //             <td class="product_table">${productVO.price}</td>
+    // <!--            <td>${productVO.category_code}</td>-->
+    //             <td class="product_table">${category_name}</td>
+    //             <td class="product_table"><img src="${productVO.product_img}" alt="no image" style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
+    //                        <td class="product_table">${productVO.product_explain}</td>
+    //             <td class="product_table">${productVO.company_code}</td>
+    //         </tr>
+    //     `;
+    //                             tableBody.append(row);
+    //                         });
+    //                         // 페이징 업데이트
+    //                         let paginationContainer = $(".pagination-container");
+    //                         paginationContainer.empty();
+    //
+    //                         let productPageVO = response.productPageVO;
+    //                         if (productPageVO.prev) {
+    //                             paginationContainer.append('<a href="#" class="pagination-group">◀ 이전</a>');
+    //                         }
+    //
+    //                         for (let i = productPageVO.startPage; i <= productPageVO.endPage; i++) {
+    //                             let activeClass = productPageVO.page == i ? 'active' : '';
+    //                             paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}">${i}</a>`);
+    //                         }
+    //
+    //                         if (productPageVO.next) {
+    //                             paginationContainer.append('<a href="#" class="pagination-group">다음 ▶</a>');
+    //                         }
+    //
+    //                     },
+    //                     error: function (jqXHR, textStatus, errorThrown) {
+    //                         alert("Error: " + textStatus + ", " + errorThrown);
+    //                         console.log(jqXHR.responseText);
+    //                     }
+    //
+    //                 });
+    //
+    //             });
 
 </script>
 </html>

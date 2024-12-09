@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +43,11 @@ public class ProductServiceImpl implements IF_ProductService{
     }
 
     @Override
-    public List<ProductVO> selectCategory(String oneSearch) throws Exception {
-
-        return productDao.selectCategory(oneSearch);
+    public List<ProductVO> selectCategory(String category_code, ProductPageVO productPageVO) throws Exception {
+        Map<String, Object> param = new HashMap<>();
+        param.put("category_code", category_code);
+        param.put("productPageVO", productPageVO);
+        return productDao.selectCategory(param);
     }
 
     @Override

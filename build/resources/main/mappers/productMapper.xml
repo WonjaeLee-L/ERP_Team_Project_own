@@ -33,14 +33,32 @@
     </select>
 <!--String product_name, String sale_price, String category_code-->
 <!--    category select // 전체 선택시, 전체도 적용하도록 함-->
-    <select id="selectCategory" parameterType="String" resultType="com.example.practice.vo.ProductVO">
-        select * from PRODUCT
+    <select id="selectCategory" parameterType="map" resultType="com.example.practice.vo.ProductVO">
+        SELECT t.*
+        FROM (
+        SELECT sub.*, ROWNUM as rnum
+        FROM (
+        SELECT *
+        FROM product
         <where>
-            <if test = "oneSearch != 'all'">
-                CATEGORY_CODE = #{oneSearch}
+            <if test="category_code != null and category_code != ''">
+                <choose>
+                    <when test="category_code == 'all'">
+                    </when>
+                    <when test="category_code == 'others'">
+                        CATEGORY_CODE NOT IN ('9999', '2222')
+                    </when>
+                    <otherwise>
+                        CATEGORY_CODE = #{category_code,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
             </if>
         </where>
-        order by category_code
+        ORDER BY num DESC
+        ) sub
+        WHERE ROWNUM &lt;= #{productPageVO.endNo}
+        ) t
+        WHERE t.rnum &gt; #{productPageVO.startNo}
     </select>
 
     <delete id="deleteProduct" parameterType="java.util.List">
