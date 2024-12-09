@@ -663,6 +663,126 @@
     //                 });
     //
     //             });
+    <!--        <tfoot>-->
+    <!--        <tr class="product_table_tf">-->
+    <!--            <td class="product_table_tf" colspan="9">-->
+    <!--                <div style="text-align: right;">-->
+    <!--                    <button type="button" id="delCheck" class="modalbtn">선택 삭제</button>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td colspan="10">-->
+    <!--                <div class="pagination-container">-->
+    <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.prev}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>◀ 이전</span>-->
+    <!--                    </a>-->
+
+    <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+    <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+    <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                           th:text="${idx}"-->
+    <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+
+    <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.next}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>다음 ▶</span>-->
+    <!--                    </a>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        </tfoot>-->
+    <!--        <tfoot>-->
+    <!--        <tr class="product_table_tf">-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf">-->
+    <!--                <button type="button" id="delCheck">선택 삭제</button>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td colspan="10">-->
+    <!--                <div class="pagination-container">-->
+    <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.prev}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>◀ 이전</span>-->
+    <!--                    </a>-->
+
+    <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+    <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+    <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                           th:text="${idx}"-->
+    <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+
+    <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.next}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>다음 ▶</span>-->
+    <!--                    </a>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        </tfoot>-->
+
+    <!-- body 하단. 검색 input 및 물품 등록 button -->
+    <!--    <div class="control-container">-->
+    <!--        &lt;!&ndash; 검색 및 물품 등록 버튼 영역 &ndash;&gt;-->
+    <!--        <div class="bottom-wrap-top">-->
+    <!--            <div class="search-wrap">-->
+    <!--                <form action="productoneview" method="get" class="search-form">-->
+    <!--                    <label for="search-name" class="hide">상품명</label>-->
+    <!--                    <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                    <label for="search-price" class="hide">가격</label>-->
+    <!--                    <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                    <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                    <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                    <button type="submit">-->
+    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                    </button>-->
+    <!--                </form>-->
+    <!--            </div>-->
+    <!--            <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--                물품 등록-->
+    <!--            </button>-->
+    <!--        </div>-->
+
+    <!--        &lt;!&ndash; 엑셀 다운로드 영역 &ndash;&gt;-->
+    <!--        <div id="Result3" style="margin-top: 15px;">-->
+    <!--            <a href="/excelDown.do" class="btn btn-primary">엑셀 다운로드</a>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="bottom-wrap-top">-->
+    <!--        <div class="search-wrap">-->
+    <!--            <form action="productoneview" method="get" class="search-form">-->
+    <!--                <label for="search-name" class="hide">상품명</label>-->
+    <!--                <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                <label for="search-price" class="hide">가격</label>-->
+    <!--                <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                <button type="submit">-->
+    <!--                    <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                </button>-->
+    <!--            </form>-->
+    <!--        </div>-->
+    <!--        <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--            물품 등록-->
+    <!--        </button>-->
+    <!--    </div>-->
+    <!--    <div id="Result3"><a href="/excelDown.do">ssssss</a></div>-->
 
 </script>
 </html>

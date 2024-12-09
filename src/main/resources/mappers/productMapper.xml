@@ -3,36 +3,45 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.practice.repository.IF_ProductDao">
-    <select id="selectAll" resultType="com.example.practice.vo.ProductVO">
-        select t.* from (select sub.*, rownum as rnum from (select * from product order by num DESC) sub)
-                            t where rnum between #{startNo} and #{endNo}
+    <select id="selectAllProduct" resultType="com.example.practice.vo.ProductVO">
+        select t.*
+        from (select sub.*, rownum as rnum from (select * from product order by num DESC) sub) t
+        where rnum between #{startNo} and #{endNo}
     </select>
+
     <select id="productCount" resultType="int">
-        select count(*) from PRODUCT
-    </select>
-    <insert id="insertProduct" parameterType="com.example.practice.vo.ProductVO">
-        insert into product
-        values (#{product_code}, #{product_name}, #{sale_price}, #{price}, #{category_code}, #{product_img},
-                #{product_explain}, #{company_code}, pro_seq.nextval)
-    </insert>
-<!--    검색창 검색 // 여러 조건 (이름, 가격, 코드) 문자열 포함 검색. 다중 결과 // 가격은 정확. 코드와 이름은 포함으로-->
-    <select id="selectProduct" parameterType="String" resultType="com.example.practice.vo.ProductVO">
-        select *
+        select count(*)
         from PRODUCT
+    </select>
+
+    <!--    상품명(포함), 가격, 코드로 검색 -->
+    <select id="selectProduct" parameterType="map"
+            resultType="com.example.practice.vo.ProductVO">
+        SELECT t.*
+        FROM (
+        SELECT sub.*, ROWNUM as rnum
+        FROM (
+        SELECT *
+        FROM product
         <where>
-            <if test="product_name != null">
-                product_name like concat('%', concat(#{product_name}, '%'))
+            <if test='productVO.product_name != null and productVO.product_name != ""'>
+                product_name like concat('%', concat(#{productVO.product_name}, '%'))
             </if>
-            <if test="sale_price != null">
-                AND sale_price = #{sale_price}
+            <if test='productVO.sale_price != null and productVO.sale_price != ""'>
+                AND sale_price = #{productVO.sale_price}
             </if>
-            <if test="category_code != null">
-                AND category_code like concat('%', concat(#{category_code}, '%'))
+            <if test='productVO.category_code != null and productVO.category_code != ""'>
+                AND category_code = #{productVO.category_code,jdbcType=VARCHAR}
             </if>
         </where>
+        ORDER BY num DESC
+        ) sub
+        WHERE ROWNUM &lt;= #{productPageVO.endNo}
+        ) t
+        WHERE t.rnum &gt; #{productPageVO.startNo}
     </select>
-<!--String product_name, String sale_price, String category_code-->
-<!--    category select // 전체 선택시, 전체도 적용하도록 함-->
+
+    <!--    category select // 전체 선택시, 전체도 적용하도록 함 -->
     <select id="selectCategory" parameterType="map" resultType="com.example.practice.vo.ProductVO">
         SELECT t.*
         FROM (
@@ -41,15 +50,15 @@
         SELECT *
         FROM product
         <where>
-            <if test="category_code != null and category_code != ''">
+            <if test='category_code != null or category_code != ""'>
                 <choose>
-                    <when test="category_code == 'all'">
+                    <when test='category_code == "all"'>
                     </when>
-                    <when test="category_code == 'other'">
+                    <when test='category_code == "other"'>
                         CATEGORY_CODE NOT IN ('9999', '2222')
                     </when>
                     <otherwise>
-                        CATEGORY_CODE = #{category_code,jdbcType=VARCHAR}
+                        CATEGORY_CODE = #{category_code}
                     </otherwise>
                 </choose>
             </if>
@@ -72,12 +81,18 @@
         update PRODUCT
         set SALE_PRICE      = #{sale_price},
             PRICE           = #{price},
-            PRODUCT_CODE = #{product_code},
-            PRODUCT_IMG = #{product_img},
+            PRODUCT_CODE    = #{product_code},
+            PRODUCT_IMG     = #{product_img},
             PRODUCT_EXPLAIN = #{product_explain},
-            PRODUCT_NAME = #{product_name}
+            PRODUCT_NAME    = #{product_name}
         where NUM = #{num}
     </update>
+
+    <insert id="insertProduct" parameterType="com.example.practice.vo.ProductVO">
+        insert into product
+        values (#{product_code}, #{product_name}, #{sale_price}, #{price}, #{category_code}, #{product_img},
+                #{product_explain}, #{company_code}, pro_seq.nextval)
+    </insert>
 </mapper>
 
 

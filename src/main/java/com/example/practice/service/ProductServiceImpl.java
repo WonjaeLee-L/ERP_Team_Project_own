@@ -18,8 +18,8 @@ public class ProductServiceImpl implements IF_ProductService{
     private final IF_ProductDao productDao;
 
     @Override
-    public List<ProductVO> selectAll(ProductPageVO productpageVO) throws Exception {
-        return productDao.selectAll(productpageVO);
+    public List<ProductVO> selectAllProduct(ProductPageVO productpageVO) throws Exception {
+        return productDao.selectAllProduct(productpageVO);
     }
 
     @Override
@@ -28,26 +28,14 @@ public class ProductServiceImpl implements IF_ProductService{
     }
 
     @Override
-    public List<ProductVO> selectProduct(String product_name, String sale_price, String category_code) throws Exception {
-//        System.out.println("selectProduct product_name: " + product_name);  // Add debug
-//        if (product_name == null || product_name.isEmpty()) {
-//            System.out.println("product_name이 null이거나 비어 있습니다.");
-//
-//            return Collections.emptyList();
-//        }
-//        System.out.println("selectProduct 결과: ");  // 결과 디버그
-        List<ProductVO> productVOList = productDao.selectProduct(product_name, sale_price, category_code);
-//        System.out.println(productVOList);
-        return productVOList;
-//        return productDao.selectProduct(product_name);
+    public List<ProductVO> searchProduct(Map<String, Object> params) throws Exception {
+        List<ProductVO> productVOS = productDao.selectProduct(params);
+        return productVOS;
     }
 
     @Override
-    public List<ProductVO> selectCategory(String category_code, ProductPageVO productPageVO) throws Exception {
-        Map<String, Object> param = new HashMap<>();
-        param.put("category_code", category_code);
-        param.put("productPageVO", productPageVO);
-        return productDao.selectCategory(param);
+    public List<ProductVO> selectCategory(Map<String, Object> params) throws Exception {
+        return productDao.selectCategory(params);
     }
 
     @Override

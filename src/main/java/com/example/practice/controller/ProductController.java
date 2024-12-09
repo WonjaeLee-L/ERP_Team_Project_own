@@ -46,7 +46,7 @@ public class ProductController {
         } catch (Exception e) {
             return "ErrorPage";
         }
-        return "redirect:productlistview";
+        return "redirect:productList";
     }
 
     // 물품 등록_2
@@ -69,18 +69,15 @@ public class ProductController {
         if (result.hasErrors()) {
             return "MainProduct";
         }
-
         handleProductImageUpdate(productVO, file);
         productservice.updateProduct(productVO);
-
-        return "redirect:productlistview";
+        return "redirect:productList";
     }
 
     // 물품 수정_2
     private void handleProductImageUpdate(ProductVO productVO, MultipartFile file) throws Exception {
         if (file != null && !file.isEmpty()) {
             deleteExistingProductImage(productVO);
-
             String absolutePath = productFile.saveFile(file);
             if (absolutePath != null) {
                 String relativePath = "/static/productImg/" + new File(absolutePath).getName();
@@ -100,26 +97,20 @@ public class ProductController {
         }
     }
 
-
-    // 상품 리스트
+    // product list
     @ResponseBody
-    @GetMapping("/productlistview")
+    @GetMapping("/productList")
     public ModelAndView product(@ModelAttribute ProductPageVO productPageVO) throws Exception {
         if (productPageVO.getPage() == null) {
             productPageVO.setPage(1);
         }
         productPageVO.setTotalCount(productservice.totalproductcount());
-
-        List<ProductVO> productlist = productservice.selectAll(productPageVO);
-
-        // 디버깅 및 기본 이미지 설정
+        List<ProductVO> productlist = productservice.selectAllProduct(productPageVO);
         for (ProductVO product : productlist) {
-            System.out.println("Product Img: " + product.getProduct_img());
             if (product.getProduct_img() == null || product.getProduct_img().isEmpty()) {
                 product.setProduct_img("/static/productImg/default/defaultImage.png");
             }
         }
-
         ModelAndView mv = new ModelAndView();
         mv.addObject("productPageVO", productPageVO);
         mv.addObject("productlist", productlist);
@@ -127,7 +118,86 @@ public class ProductController {
         return mv;
     }
 
-    // 엑셀 다운
+//     search product
+    @GetMapping("/searchProduct")
+    public String searchProduct(@RequestParam("search-name") String product_name, @RequestParam("search-price") String product_price, @RequestParam("search-category") String category_code, @ModelAttribute ProductPageVO productPageVO, Model model) throws Exception {
+        if (productPageVO.getPage() == null) {
+            productPageVO.setPage(1);
+        }
+        productPageVO.setTotalCount(productservice.totalproductcount());
+        ProductVO productVO = new ProductVO();
+        if (product_name != null) {
+            productVO.setProduct_name(product_name);
+        } else {
+            productVO.setProduct_name("");
+        }
+        if (!product_price.isEmpty()) {
+            productVO.setSale_price(Integer.parseInt(product_price));
+        } else {
+            productVO.setSale_price(0);
+        }
+        if (category_code != null) {
+            productVO.setCategory_code(category_code);
+        } else {
+            productVO.setCategory_code("");
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("productVO", productVO);
+        params.put("productPageVO", productPageVO);
+
+        List<ProductVO> productVOS = productservice.searchProduct(params);
+        if (productVOS.isEmpty()) {
+            return "redirect:productList";
+        }
+        model.addAttribute("productlist", productVOS);
+        model.addAttribute("productPageVO", productPageVO);
+        return "MainProduct";
+    }
+
+    // select product(category)
+    @PostMapping("/selectcategory")
+    @ResponseBody
+    public Map<String, Object> selectCategory(@RequestParam(value = "category_code", required = false) String category_code, @RequestParam(value = "page", defaultValue = "1") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
+        Map<String, Object> response = new HashMap<>();
+        ProductPageVO productPageVO = new ProductPageVO();
+        productPageVO.setPage(page);
+        productPageVO.setPerPageNum(size);
+        productPageVO.setTotalCount(productservice.totalproductcount());
+        int startNo = (page - 1) * size;
+        int endNo = startNo + size;
+        productPageVO.setStartNo(startNo);
+        productPageVO.setEndNo(endNo);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("category_code", category_code);
+        params.put("productPageVO", productPageVO);
+
+        List<ProductVO> productVO = productservice.selectCategory(params);
+        for (ProductVO product : productVO) {
+            if (product.getProduct_img() == null || product.getProduct_img().isEmpty()) {
+                product.setProduct_img("/static/productImg/default/defaultImage.png");
+            }
+        }
+        response.put("productVOMod", productVO);
+        response.put("productPageVO", productPageVO);
+        return response;
+    }
+
+    // delete product(list & modal)
+    @PostMapping("/productdel")
+    public ResponseEntity<String> del(@RequestBody Map<String, List<Integer>> payload) throws Exception {
+        List<Integer> num = payload.get("num");
+        System.out.println("controller in: " + num);
+        if (num == null || num.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid request: 'num' list is empty or null.");
+        }
+        productservice.deleteProduct(num);
+        return ResponseEntity.ok("Del");
+    }
+
+    // excel download
     @RequestMapping(value = "/excelDown.do")
     public void excelDown(HttpServletResponse response, ProductPageVO productPageVO) throws Exception {
 
@@ -137,7 +207,7 @@ public class ProductController {
         }
         productPageVO.setTotalCount(productservice.totalproductcount());
 
-        List<ProductVO> list = productservice.selectAll(productPageVO);
+        List<ProductVO> list = productservice.selectAllProduct(productPageVO);
 
         Workbook wb = new HSSFWorkbook();
         Sheet sheet = wb.createSheet("게시판");
@@ -189,66 +259,4 @@ public class ProductController {
         wb.write(response.getOutputStream());
         wb.close();
     }
-
-    // 물품 검색, 이름 다중 검색
-    @GetMapping("/productoneview")
-    public String productOneView(@RequestParam("search-name") String product_name, @RequestParam("search-price") String product_price, @RequestParam("search-category") String category_code, @ModelAttribute ProductVO productVO, Model model) throws Exception {
-        List<ProductVO> productVOS = productservice.selectProduct(product_name, product_price, category_code);
-        System.out.println("확인: " + product_name);
-        model.addAttribute("productlist", productVOS);
-        // 입력 안하고 검색하면, 전체 리스트 호출
-        if (productVOS.isEmpty()) {
-            return "redirect:productlistview";
-        }
-        return "MainProduct";
-    }
-
-    // 리스트에서 물품 삭제
-    @PostMapping("/productdel")
-    public ResponseEntity<String> del(@RequestBody Map<String, List<Integer>> payload) throws Exception {
-        List<Integer> num = payload.get("num");
-        System.out.println("controller in: " + num);
-
-        if (num == null || num.isEmpty()) {
-            return ResponseEntity.badRequest().body("Invalid request: 'num' list is empty or null.");
-        }
-        productservice.deleteProduct(num);
-        return ResponseEntity.ok("Deletion successful");
-    }
-
-
-    @PostMapping("/selectcategory")
-    @ResponseBody
-    public Map<String, Object> selectCategory(@RequestParam(value = "category_code", required = false) String category_code, @RequestParam(value = "page", defaultValue = "1") int page,
-                                              @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
-        Map<String, Object> response = new HashMap<>();
-        ProductPageVO productPageVO = new ProductPageVO();
-        productPageVO.setPage(page);
-        productPageVO.setPerPageNum(size);
-        productPageVO.setTotalCount(productservice.totalproductcount());
-        int startNo = (page - 1) * size;
-        int endNo = startNo + size;
-        productPageVO.setStartNo(startNo);
-        productPageVO.setEndNo(endNo);
-        List<ProductVO> productVO = productservice.selectCategory(category_code, productPageVO);
-
-
-        for (ProductVO product : productVO) {
-            if (product.getProduct_img() == null || product.getProduct_img().isEmpty()) {
-                product.setProduct_img("/static/productImg/default/defaultImage.png");
-            }
-        }
-
-        response.put("productVOMod", productVO);
-        response.put("productPageVO", productPageVO);
-        return response;
-    }
 }
-
-
-
-
-
-
-
-

@@ -131,12 +131,6 @@
 <!--    </div>-->
 
 
-
-
-
-
-
-
 </body>
 <script>
     // var num = td.eq(0).text();
@@ -174,7 +168,7 @@
     // formData.append("category_code", category_code);
     // formData.append("product_explain", product_explain);
     // formData.append("company_code", company_code);
-//**************************************************************************
+    //**************************************************************************
     //     doubleSubmit = false;
     // }
 
@@ -222,12 +216,6 @@
     //         }
     //     });
     // })
-
-
-
-
-
-
 
 
     // $(document).ready(function () {
@@ -338,8 +326,6 @@
     //
     // }
     // });
-
-
 
 
     // ********************** controller
@@ -530,6 +516,53 @@
     //            }
     //        }
 
+    //    @ResponseBody
+    //    @PostMapping(value = "/productlistview1", consumes = "multipart/form-data")
+    //    public void productModalView(@RequestParam("num") int num, @RequestParam("product_code") String product_code, @RequestParam("product_name") String product_name, @RequestParam("sale_price") int sale_price, @RequestParam("price") int price, @RequestParam("category_code") String category_code, @RequestParam("product_explain") String product_explain, @RequestParam("company_code") String company_code) throws Exception {
+    /// /        @RequestParam("file") MultipartFile file,
+    /// /        String filePath = productFile.saveFile(file);
+    //        ProductVO productVO = new ProductVO();
+    //        productVO.setNum(num);
+    //        productVO.setProduct_code(product_code);
+    //        productVO.setProduct_name(product_name);
+    //        productVO.setSale_price(sale_price);
+    //        productVO.setPrice(price);
+    //        productVO.setCategory_code(category_code);
+    /// /        productVO.setProduct_img(filePath);
+    /// /        productVO.setProduct_img(product_img);
+    //        productVO.setProduct_explain(product_explain);
+    //        productVO.setCompany_code(company_code);
+    //        ObjectMapper objectMapper = new ObjectMapper();
+    //        objectMapper.writeValueAsString(productVO);
+    ////        System.out.println(productVO.toString());
+    //
+    //    }
+    //}
+
+    //        @PostMapping("/modProductInfo")
+    //        public String productMod(@ModelAttribute ProductVO productVO, @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+    //
+    //            if (file != null && !file.isEmpty()) {
+    //                // 기존 절대 경로 삭제, 중복 저장 방지 로직 추가
+    //                String existingImgPath = productVO.getProduct_img();
+    //                if (existingImgPath != null && !existingImgPath.equals("/static/productImg/default/defaultImage.png")) {
+    //                    // 파일 삭제 로직 추가
+    //                    File existingFile = new File("C:/Data/aa/projectSample-master/src/main/resources" + existingImgPath);
+    //                    if (existingFile.exists()) {
+    //                        existingFile.delete();
+    //                    }
+    //                }
+    //
+    //                String absolutePath = productFile.saveFile(file);
+    //                if (absolutePath != null) {
+    //                    String relativePath = "/static/productImg/" + new File(absolutePath).getName();
+    //                    productVO.setProduct_img(relativePath);
+    //                }
+    //            }
+    //            productservice.updateProduct(productVO);
+    //            return "redirect:productlistview";
+    //        }
+
 
     //        if (file != null && !file.isEmpty()) {
     //            String saveFileName = productFile.saveFile(file);
@@ -563,6 +596,193 @@
     //    }
     //}
 
+    //                 var code = $(this).val();
+    //                 $.ajax({
+    //                     type: 'post',
+    //                     url: 'selectcategory',
+    //                     data: ({category_code: code}),
+    //                     datatype: 'json',
+    //                     success: function (response) {
+    //
+    //                         let tableBody = $("#wonjae");
+    //                         // 기존 콘텐츠 비우기
+    //                         tableBody.empty();
+    //
+    //                         response.productVOMod.forEach(productVO => {
+    //
+    //                             let category_name;
+    //
+    //                             if (productVO.category_code === '9999') {
+    //                                 category_name = '음식';
+    //                             } else if (productVO.category_code === '2222') {
+    //                                 category_name = '의류';
+    //                             } else {
+    //                                 category_name = '기타';
+    //                             }
+    //
+    //                             let row = `
+    //         <tr class="product_table">
+    //             <td class="product_table">${productVO.num}</td>
+    //             <td class="product_table">${productVO.product_code}</td>
+    //             <td class="product_table">${productVO.product_name}</td>
+    //             <td class="product_table">${productVO.sale_price}</td>
+    //             <td class="product_table">${productVO.price}</td>
+    // <!--            <td>${productVO.category_code}</td>-->
+    //             <td class="product_table">${category_name}</td>
+    //             <td class="product_table"><img src="${productVO.product_img}" alt="no image" style="width: 50px; height: 50px; border: 1px solid #ddd;"></td>
+    //                        <td class="product_table">${productVO.product_explain}</td>
+    //             <td class="product_table">${productVO.company_code}</td>
+    //         </tr>
+    //     `;
+    //                             tableBody.append(row);
+    //                         });
+    //                         // 페이징 업데이트
+    //                         let paginationContainer = $(".pagination-container");
+    //                         paginationContainer.empty();
+    //
+    //                         let productPageVO = response.productPageVO;
+    //                         if (productPageVO.prev) {
+    //                             paginationContainer.append('<a href="#" class="pagination-group">◀ 이전</a>');
+    //                         }
+    //
+    //                         for (let i = productPageVO.startPage; i <= productPageVO.endPage; i++) {
+    //                             let activeClass = productPageVO.page == i ? 'active' : '';
+    //                             paginationContainer.append(`<a href="#" class="pagination-link ${activeClass}">${i}</a>`);
+    //                         }
+    //
+    //                         if (productPageVO.next) {
+    //                             paginationContainer.append('<a href="#" class="pagination-group">다음 ▶</a>');
+    //                         }
+    //
+    //                     },
+    //                     error: function (jqXHR, textStatus, errorThrown) {
+    //                         alert("Error: " + textStatus + ", " + errorThrown);
+    //                         console.log(jqXHR.responseText);
+    //                     }
+    //
+    //                 });
+    //
+    //             });
+    <!--        <tfoot>-->
+    <!--        <tr class="product_table_tf">-->
+    <!--            <td class="product_table_tf" colspan="9">-->
+    <!--                <div style="text-align: right;">-->
+    <!--                    <button type="button" id="delCheck" class="modalbtn">선택 삭제</button>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td colspan="10">-->
+    <!--                <div class="pagination-container">-->
+    <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.prev}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>◀ 이전</span>-->
+    <!--                    </a>-->
+
+    <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+    <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+    <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                           th:text="${idx}"-->
+    <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+
+    <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.next}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>다음 ▶</span>-->
+    <!--                    </a>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        </tfoot>-->
+    <!--        <tfoot>-->
+    <!--        <tr class="product_table_tf">-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf" colspan="3">3</td>-->
+    <!--            <td class="product_table_tf">-->
+    <!--                <button type="button" id="delCheck">선택 삭제</button>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td colspan="10">-->
+    <!--                <div class="pagination-container">-->
+    <!--                    &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.prev}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>◀ 이전</span>-->
+    <!--                    </a>-->
+
+    <!--                    &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+    <!--                    <div th:each="idx : ${#numbers.sequence(productPageVO?.startPage, productPageVO?.endPage)}">-->
+    <!--                        <a th:href="@{/productlistview(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                           th:text="${idx}"-->
+    <!--                           th:class="${productPageVO?.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+
+    <!--                    &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+    <!--                    <a th:if="${productPageVO?.next}"-->
+    <!--                       th:href="@{/productlistview(page=${productPageVO?.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"-->
+    <!--                       class="pagination-group">-->
+    <!--                        <span>다음 ▶</span>-->
+    <!--                    </a>-->
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--        </tfoot>-->
+
+    <!-- body 하단. 검색 input 및 물품 등록 button -->
+    <!--    <div class="control-container">-->
+    <!--        &lt;!&ndash; 검색 및 물품 등록 버튼 영역 &ndash;&gt;-->
+    <!--        <div class="bottom-wrap-top">-->
+    <!--            <div class="search-wrap">-->
+    <!--                <form action="productoneview" method="get" class="search-form">-->
+    <!--                    <label for="search-name" class="hide">상품명</label>-->
+    <!--                    <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                    <label for="search-price" class="hide">가격</label>-->
+    <!--                    <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                    <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                    <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                    <button type="submit">-->
+    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                    </button>-->
+    <!--                </form>-->
+    <!--            </div>-->
+    <!--            <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--                물품 등록-->
+    <!--            </button>-->
+    <!--        </div>-->
+
+    <!--        &lt;!&ndash; 엑셀 다운로드 영역 &ndash;&gt;-->
+    <!--        <div id="Result3" style="margin-top: 15px;">-->
+    <!--            <a href="/excelDown.do" class="btn btn-primary">엑셀 다운로드</a>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="bottom-wrap-top">-->
+    <!--        <div class="search-wrap">-->
+    <!--            <form action="productoneview" method="get" class="search-form">-->
+    <!--                <label for="search-name" class="hide">상품명</label>-->
+    <!--                <input type="text" id="search-name" name="search-name" placeholder="상품명">-->
+    <!--                <label for="search-price" class="hide">가격</label>-->
+    <!--                <input type="text" id="search-price" name="search-price" placeholder="가격">-->
+    <!--                <label for="search-category" class="hide">카테고리명</label>-->
+    <!--                <input type="text" id="search-category" name="search-category" placeholder="카테고리명">-->
+    <!--                <button type="submit">-->
+    <!--                    <i class="fa-solid fa-magnifying-glass"></i>-->
+    <!--                </button>-->
+    <!--            </form>-->
+    <!--        </div>-->
+    <!--        <button type="button" class="modalbtn" data-bs-toggle="modal" data-bs-target="#addProduct">-->
+    <!--            물품 등록-->
+    <!--        </button>-->
+    <!--    </div>-->
+    <!--    <div id="Result3"><a href="/excelDown.do">ssssss</a></div>-->
 
 </script>
 </html>
