@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.practice.repository.IF_CalendarEventDao">
+
+    <select id="getAllEvents" resultType="com.example.practice.vo.CalendarEventDTO">
+        SELECT
+            ID,
+            TITLE,
+            "start",
+            "end",
+            ALLDAY,
+            ERPID,
+            CREATED_AT,
+            UPDATED_AT
+        FROM CALENDAR_EVENTS
+        WHERE ERPID = #{erpId}
+        ORDER BY "start"
+    </select>
+
+    <select id="getEventById" parameterType="long" resultType="com.example.practice.vo.CalendarEventDTO">
+        SELECT
+            ID,
+            TITLE,
+            "start",
+            "end",
+            ALLDAY,
+            ERPID,
+            CREATED_AT,
+            UPDATED_AT
+        FROM CALENDAR_EVENTS
+        WHERE ID = #{id}
+    </select>
+
+    <insert id="insertEvent" parameterType="com.example.practice.vo.CalendarEventDTO">
+        INSERT INTO CALENDAR_EVENTS (
+            ID, TITLE, "start", "end", ALLDAY, ERPID, CREATED_AT, UPDATED_AT
+        ) VALUES (
+                     EVENT_SEQ.NEXTVAL,
+                     #{title},
+                     #{start},
+                     #{end},
+                     #{allDay, jdbcType=NUMERIC},
+                     #{erpId},
+                     SYSTIMESTAMP,
+                     SYSTIMESTAMP
+                 )
+    </insert>
+
+    <delete id="deleteEvent" parameterType="long">
+        DELETE FROM CALENDAR_EVENTS WHERE ID = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,316 @@
+CREATE TABLE erpRevenue(	/* 매출 */
+revenueName varchar2(20) PRIMARY KEY,
+revenueType varchar2(20) DEFAULT 'income' check(revenueType IN('income','outcome'))
+);
+
+
+
+SELECT * FROM erpRevenue;
+
+
+
+INSERT INTO erpRevenue VALUES ('제품 매출','income');
+
+INSERT INTO erpRevenue VALUES ('서비스 매출','income');
+
+INSERT INTO erpRevenue VALUES ('기타 수익','income');
+
+INSERT INTO erpRevenue VALUES ('이자 수익','income');
+
+INSERT INTO erpRevenue VALUES ('외상매출금','income');
+
+INSERT INTO erpRevenue VALUES ('매출채권','income');
+
+
+
+
+
+CREATE TABLE erpExpense(	/* 비용 */
+expenseName varchar2(20) PRIMARY KEY,
+expenseType varchar2(20) DEFAULT 'outcome' check(expenseType IN('income','outcome'))
+);
+
+
+
+
+
+
+
+SELECT * FROM erpExpense;
+
+
+
+
+
+INSERT INTO erpExpense VALUES ('급여비','outcome');
+INSERT INTO erpExpense VALUES ('임금비','outcome');
+INSERT INTO erpExpense VALUES ('소모품비','outcome');
+INSERT INTO erpExpense VALUES ('광고비','outcome');
+INSERT INTO erpExpense VALUES ('인쇄비','outcome');
+INSERT INTO erpExpense VALUES ('판매비','outcome');
+INSERT INTO erpExpense VALUES ('운송비','outcome');
+INSERT INTO erpExpense VALUES ('관리비','outcome');
+INSERT INTO erpExpense VALUES ('기타 관리비','outcome');
+INSERT INTO erpExpense VALUES ('감가상각비','outcome');
+
+
+
+
+
+
+
+CREATE TABLE erpAsset(	/* 자산 */
+assetName varchar2(20) PRIMARY KEY,
+assetType varchar2(20) check(assetType IN('income','outcome'))
+);
+
+
+
+
+
+SELECT * FROM erpAsset;
+
+
+
+
+
+DELETE FROM erpAsset;
+
+
+
+INSERT INTO erpAsset VALUES ('재고자산','outcome');
+INSERT INTO erpAsset VALUES ('기계장비','outcome');
+INSERT INTO erpAsset VALUES ('감가상각누계액','outcome');
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE erpLiability(	/* 부채 */
+liaName varchar2(20) PRIMARY KEY,
+liaType varchar2(20) CHECK(liaType IN('income','outcome'))
+);
+
+
+
+
+
+
+
+SELECT * FROM erpLiability;
+
+
+
+
+
+DELETE FROM erpLiability;
+
+
+
+INSERT INTO erpLiability VALUES ('단기부채 이자','outcome');
+INSERT INTO erpLiability VALUES ('장기부채 이자','outcome');
+INSERT INTO erpLiability VALUES ('미지급 비용','outcome');
+INSERT INTO erpLiability VALUES ('미지급 급여','outcome');
+
+
+
+DROP TABLE erpSliprg;
+
+
+
+
+
+
+
+CREATE TABLE erpSlippv(
+pvCode number(20) PRIMARY KEY,	/* 승인이 떨어진 전표 코드 */
+pvslipCode varchar2(50) NOT NULL,	/* 전표 타입 */
+pvName varchar2(50) NOT NULL,	/* 작성자 이름 */
+pvDate timestamp NOT NULL,	/* 전표 등록 날짜 */
+pvslipName varchar2(50) NOT NULL,	/* 계정과목 */
+pvCmpy varchar2(50) NOT NULL,	/* 거래처명 */
+pvPrice NUMBER(20) NOT NULL,	/* 금액 */
+pvFee number(20) DEFAULT 0,		/* 부가세 */
+pvPay varchar2(50) NOT NULL,	/* 결제 수단 */
+pvComment varchar2(100) NOT NULL	/* 적요 */
+);
+
+SELECT TO_CHAR(pvDate, 'YYYY-MM-DD') AS formatted_date
+FROM erpSlippv WHERE pvcode = '75';
+
+insert into erpSlippv values (slip_seq.NEXTVAL, '매출','이찬','2024/02/04','상품 판매','삼성','100000','1000','카드','담보');
+
+SELECT TO_CHAR(sysdate, 'yyyy-mm-dd') FROM dual;
+SELECT TO_CHAR(sysdate, 'yyyy-mm-dd hh24:mi:ss') FROM dual;
+
+DELETE FROM erpSlippv;
+
+SELECT * FROM erpSlippv WHERE pvDate >= TO_DATE('2019-01-01') AND pvDate <= TO_DATE('2024-01-01') AND PVSLIPNAME = '제품 매출';
+SELECT PVPRICE FROM erpSlippv WHERE pvDate >= TO_DATE('2019-01-01') AND pvDate <= TO_DATE('2024-01-01');
+
+SELECT SUM(PVPRICE)
+FROM erpSlippv
+WHERE pvDate >= TO_DATE('2019-01-01', 'YYYY-MM-DD')
+  AND pvDate <= TO_DATE('2024-01-01', 'YYYY-MM-DD');
+
+
+SELECT * FROM erpSlippv ORDER BY pvcode asc;
+
+CREATE TABLE erpSliprg(
+rgCode number(20) PRIMARY KEY,	/* 승인이 떨어진 전표 코드 */
+rgslipCode varchar2(50) NOT NULL,	/* 전표 타입 */
+rgName varchar2(50) NOT NULL,	/* 작성자 이름 */
+rgDate timestamp NOT NULL,	/* 전표 등록 날짜 */
+rgslipName varchar2(50) NOT NULL,	/* 계정과목 */
+rgCmpy varchar2(50) NOT NULL,	/* 거래처명 */
+rgPrice NUMBER(20) NOT NULL,	/* 금액 */
+rgFee number(20) DEFAULT 0,		/* 부가세 */
+rgPay varchar2(50) NOT NULL,	/* 결제 수단 */
+rgComment varchar2(100) NOT NULL	/* 적요 */
+);
+
+
+SELECT * FROM erpSlippv;
+
+
+SELECT * FROM erpSliprg;
+
+
+SELECT * FROM erpSlip;
+
+
+SELECT * FROM erpLiability WHERE liaName = '단기부채 이자';
+
+
+DELETE FROM erpSlippv WHERE pvcode = 22;
+
+DELETE FROM erpSliprg;
+
+select t.* from (
+    select sub.*, rownum as rnum from (
+        select
+            PVCODE,
+            PVSLIPCODE,
+            PVNAME,
+            TO_CHAR(PVDATE, 'YYYY-MM-DD') as PVDATE,
+            PVSLIPNAME,
+            PVCMPY,
+            PVPRICE,
+            PVFEE,
+            PVPAY,
+            PVCOMMENT
+        from ERPSLIPPV order by PVCODE ASC
+    ) sub
+) t where rnum between 1 and 10
+
+
+CREATE SEQUENCE slip_seq
+START WITH 1
+INCREMENT BY 1;
+
+CREATE SEQUENCE rg_seq
+START WITH 1
+INCREMENT BY 1;
+
+drop SEQUENCE slip_seq;
+drop SEQUENCE rg_seq;
+
+-- 매출 관련 데이터
+
+
+
+-- 1. 매출(Revenue) 계산
+WITH revenue AS (
+    SELECT
+        SUM(CASE WHEN rgslipName = '제품 매출' THEN rgPrice ELSE 0 END) as product_revenue,
+        SUM(CASE WHEN rgslipName = '서비스 매출' THEN rgPrice ELSE 0 END) as service_revenue,
+        SUM(CASE WHEN rgslipName = '기타 수익' THEN rgPrice ELSE 0 END) as other_revenue,
+        SUM(CASE WHEN rgslipName = '이자 수익' THEN rgPrice ELSE 0 END) as interest_revenue
+    FROM erpSliprg
+    WHERE rgDate BETWEEN TO_DATE(:startDate) AND TO_DATE(:endDate)
+),
+
+-- 2. 매출원가(COGS) 계산
+cogs AS (
+    SELECT
+        SUM(CASE WHEN rgslipName = '소모품비' THEN rgPrice ELSE 0 END) as supplies_cost,
+        SUM(CASE WHEN rgslipName = '운송비' THEN rgPrice ELSE 0 END) as shipping_cost,
+        SUM(CASE WHEN rgslipName = '급여비' THEN rgPrice ELSE 0 END) as salary_cost,
+        SUM(CASE WHEN rgslipName = '임금비' THEN rgPrice ELSE 0 END) as wage_cost,
+        SUM(CASE WHEN rgslipName = '기계장비' THEN rgPrice ELSE 0 END) as equipment_depreciation,
+        SUM(CASE WHEN rgslipName = '재고자산' THEN rgPrice ELSE 0 END) as inventory_cost
+    FROM erpSliprg
+    WHERE rgDate BETWEEN TO_DATE(:startDate) AND TO_DATE(:endDate)
+),
+
+-- 3. 부가세(VAT) 계산
+vat AS (
+    SELECT SUM(rgFee) as total_vat
+    FROM erpSliprg
+    WHERE rgDate BETWEEN TO_DATE(:startDate) AND TO_DATE(:endDate)
+),
+
+-- 4. 판매비와 관리비(SG&A) 계산
+sga AS (
+    SELECT
+        SUM(CASE WHEN rgslipName = '광고비' THEN rgPrice ELSE 0 END) as advertising_cost,
+        SUM(CASE WHEN rgslipName = '인쇄비' THEN rgPrice ELSE 0 END) as printing_cost,
+        SUM(CASE WHEN rgslipName = '판매비' THEN rgPrice ELSE 0 END) as selling_cost,
+        SUM(CASE WHEN rgslipName = '관리비' THEN rgPrice ELSE 0 END) as admin_cost,
+        SUM(CASE WHEN rgslipName = '기타 관리비' THEN rgPrice ELSE 0 END) as other_admin_cost,
+        SUM(CASE WHEN rgslipName = '감가상각비' THEN rgPrice ELSE 0 END) as depreciation_cost
+    FROM erpSliprg
+    WHERE rgDate BETWEEN TO_DATE(:startDate) AND TO_DATE(:endDate)
+),
+
+-- 5. 기타 비용 계산
+other_expenses AS (
+    SELECT
+        SUM(CASE WHEN rgslipName = '단기부채 이자' THEN rgPrice ELSE 0 END) as short_term_interest,
+        SUM(CASE WHEN rgslipName = '장기부채 이자' THEN rgPrice ELSE 0 END) as long_term_interest,
+        SUM(CASE WHEN rgslipName = '미지급 비용' THEN rgPrice ELSE 0 END) as accrued_expenses,
+        SUM(CASE WHEN rgslipName = '미지급 급여' THEN rgPrice ELSE 0 END) as accrued_salary
+    FROM erpSliprg
+    WHERE rgDate BETWEEN TO_DATE(:startDate) AND TO_DATE(:endDate)
+),
+
+-- 6. 최종 계산
+final_calculation AS (
+    SELECT
+        -- 총 매출
+        (r.product_revenue + r.service_revenue + r.other_revenue + r.interest_revenue) as total_revenue,
+        -- 총 매출원가
+        (c.supplies_cost + c.shipping_cost + c.salary_cost + c.wage_cost +
+         c.equipment_depreciation + c.inventory_cost) as total_cogs,
+        -- 총 판관비
+        (s.advertising_cost + s.printing_cost + s.selling_cost + s.admin_cost +
+         s.other_admin_cost + s.depreciation_cost) as total_sga,
+        -- 총 기타비용
+        (o.short_term_interest + o.long_term_interest + o.accrued_expenses +
+         o.accrued_salary) as total_other_expenses,
+        -- VAT
+        v.total_vat
+    FROM revenue r, cogs c, vat v, sga s, other_expenses o
+)
+
+SELECT
+    total_revenue as "총 매출",
+    total_cogs as "총 매출원가",
+    total_vat as "부가세",
+    (total_revenue - total_cogs - total_vat) as "매출총이익",
+    total_sga as "판관비",
+    (total_revenue - total_cogs - total_vat - total_sga) as "영업이익",
+    total_other_expenses as "기타비용",
+    (total_revenue - total_cogs - total_vat - total_sga - total_other_expenses) as "당기순이익"
+FROM final_calculation;
+
+
+
+
+COMMIT;

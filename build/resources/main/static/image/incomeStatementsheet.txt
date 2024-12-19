@@ -1,0 +1,207 @@
+CREATE TABLE erpRevenue(	/* 매출 */
+revenueName varchar2(20) PRIMARY KEY,
+revenueType varchar2(20) DEFAULT 'income' check(revenueType IN('income','outcome'))
+);
+
+
+
+SELECT * FROM erpRevenue;
+
+
+
+INSERT INTO erpRevenue VALUES ('제품 매출','income');
+
+INSERT INTO erpRevenue VALUES ('서비스 매출','income');
+
+INSERT INTO erpRevenue VALUES ('기타 수익','income');
+
+INSERT INTO erpRevenue VALUES ('이자 수익','income');
+
+INSERT INTO erpRevenue VALUES ('외상매출금','income');
+
+INSERT INTO erpRevenue VALUES ('매출채권','income');
+
+
+
+
+
+CREATE TABLE erpExpense(	/* 비용 */
+expenseName varchar2(20) PRIMARY KEY,
+expenseType varchar2(20) DEFAULT 'outcome' check(expenseType IN('income','outcome'))
+);
+
+
+
+
+
+
+
+SELECT * FROM erpExpense;
+
+
+
+
+
+INSERT INTO erpExpense VALUES ('급여비','outcome');
+INSERT INTO erpExpense VALUES ('임금비','outcome');
+INSERT INTO erpExpense VALUES ('소모품비','outcome');
+INSERT INTO erpExpense VALUES ('광고비','outcome');
+INSERT INTO erpExpense VALUES ('인쇄비','outcome');
+INSERT INTO erpExpense VALUES ('판매비','outcome');
+INSERT INTO erpExpense VALUES ('운송비','outcome');
+INSERT INTO erpExpense VALUES ('관리비','outcome');
+INSERT INTO erpExpense VALUES ('기타 관리비','outcome');
+INSERT INTO erpExpense VALUES ('감가상각비','outcome');
+
+
+
+
+
+
+
+CREATE TABLE erpAsset(	/* 자산 */
+assetName varchar2(20) PRIMARY KEY,
+assetType varchar2(20) check(assetType IN('income','outcome'))
+);
+
+
+
+
+
+SELECT * FROM erpAsset;
+
+
+
+
+
+DELETE FROM erpAsset;
+
+
+
+INSERT INTO erpAsset VALUES ('재고자산','outcome');
+INSERT INTO erpAsset VALUES ('기계장비','outcome');
+INSERT INTO erpAsset VALUES ('감가상각누계액','outcome');
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE erpLiability(	/* 부채 */
+liaName varchar2(20) PRIMARY KEY,
+liaType varchar2(20) CHECK(liaType IN('income','outcome'))
+);
+
+
+
+
+
+
+
+SELECT * FROM erpLiability;
+
+
+
+
+
+DELETE FROM erpLiability;
+
+
+
+INSERT INTO erpLiability VALUES ('단기부채 이자','outcome');
+INSERT INTO erpLiability VALUES ('장기부채 이자','outcome');
+INSERT INTO erpLiability VALUES ('미지급 비용','outcome');
+INSERT INTO erpLiability VALUES ('미지급 급여','outcome');
+
+
+
+DROP TABLE erpSliprg;
+
+
+
+
+
+
+
+CREATE TABLE erpSlippv(
+pvCode number(20) PRIMARY KEY,	/* 승인이 떨어진 전표 코드 */
+pvslipCode varchar2(50) NOT NULL,	/* 전표 타입 */
+pvName varchar2(50) NOT NULL,	/* 작성자 이름 */
+pvDate timestamp NOT NULL,	/* 전표 등록 날짜 */
+pvslipName varchar2(50) NOT NULL,	/* 계정과목 */
+pvCmpy varchar2(50) NOT NULL,	/* 거래처명 */
+pvPrice NUMBER(20) NOT NULL,	/* 금액 */
+pvFee number(20) DEFAULT 0,		/* 부가세 */
+pvPay varchar2(50) NOT NULL,	/* 결제 수단 */
+pvComment varchar2(100) NOT NULL	/* 적요 */
+);
+
+SELECT TO_CHAR(pvDate, 'YYYY-MM-DD') AS formatted_date
+FROM erpSlippv WHERE pvcode = '75';
+
+insert into erpSlippv values (slip_seq.NEXTVAL, '매출','이찬','2024/02/04','상품 판매','삼성','100000','1000','카드','담보');
+
+SELECT TO_CHAR(sysdate, 'yyyy-mm-dd') FROM dual;
+SELECT TO_CHAR(sysdate, 'yyyy-mm-dd hh24:mi:ss') FROM dual;
+
+SELECT * FROM erpSlippv WHERE pvDate >= TO_DATE('2019-01-01') AND pvDate <= TO_DATE('2024-01-01') AND PVSLIPCODE = '자산';
+SELECT PVPRICE FROM erpSlippv WHERE pvDate >= TO_DATE('2019-01-01') AND pvDate <= TO_DATE('2024-01-01');
+
+SELECT SUM(PVPRICE) 
+FROM erpSlippv 
+WHERE pvDate >= TO_DATE('2019-01-01', 'YYYY-MM-DD') 
+  AND pvDate <= TO_DATE('2024-01-01', 'YYYY-MM-DD');
+
+
+SELECT * FROM erpSlippv ORDER BY pvcode asc;
+
+CREATE TABLE erpSliprg(
+rgCode number(20) PRIMARY KEY,	/* 승인이 떨어진 전표 코드 */
+rgslipCode varchar2(50) NOT NULL,	/* 전표 타입 */
+rgName varchar2(50) NOT NULL,	/* 작성자 이름 */
+rgDate timestamp NOT NULL,	/* 전표 등록 날짜 */
+rgslipName varchar2(50) NOT NULL,	/* 계정과목 */
+rgCmpy varchar2(50) NOT NULL,	/* 거래처명 */
+rgPrice NUMBER(20) NOT NULL,	/* 금액 */
+rgFee number(20) DEFAULT 0,		/* 부가세 */
+rgPay varchar2(50) NOT NULL,	/* 결제 수단 */
+rgComment varchar2(100) NOT NULL	/* 적요 */
+);
+
+
+SELECT * FROM erpSlippv;
+
+
+SELECT * FROM erpSliprg;
+
+
+SELECT * FROM erpSlip;
+
+
+SELECT * FROM erpLiability WHERE liaName = '단기부채 이자';
+
+
+DELETE FROM erpSlippv;
+
+DELETE FROM erpSliprg;
+
+
+
+
+CREATE SEQUENCE slip_seq
+START WITH 1
+INCREMENT BY 1;
+
+CREATE SEQUENCE rg_seq
+START WITH 1
+INCREMENT BY 1;
+
+drop SEQUENCE slip_seq;
+drop SEQUENCE rg_seq;
+
+COMMIT;

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.practice.repository.IF_AccountDao">
+	<!--  parameterType은 쿼리문의 ?부분의 정보 -->
+	<insert id="psInsert" parameterType="com.example.practice.vo.SlipVO">
+		insert into erpSlippv values (slip_seq.NEXTVAL,#{pvslipCode},#{pvName},#{pvDate},#{pvslipName},#{pvCmpy},#{pvPrice},#{pvFee},#{pvPay},#{pvComment})
+	</insert>
+	<select id="selectAll" resultType="com.example.practice.vo.SlipVO">
+		select t.* from (
+							select sub.*, rownum as rnum from (
+							select PVCODE,PVSLIPCODE,PVNAME,PVDATE,PVSLIPNAME,PVCMPY,PVPRICE,PVFEE,PVPAY,PVCOMMENT
+							from ERPSLIPPV order by PVCODE ASC) sub) t where rnum between #{startNo} and #{endNo}
+	</select>
+	<select id="totalCountPV" resultType="int">
+		select count(*) from ERPSLIPPV
+	</select>
+	<select id="selectpvNameCmpy" resultType="com.example.practice.vo.SlipVO">
+		select t.* from (select sub.*, rownum as rnum from (select PVCODE,PVSLIPCODE,PVNAME,PVDATE,PVSLIPNAME,PVCMPY,PVPRICE,PVFEE,PVPAY,PVCOMMENT
+		                                                    from ERPSLIPPV
+		<where>
+			<choose>
+				<when test="searchKeyword == 'name' and pvName != null">
+					PVNAME LIKE '%' || #{pvName} || '%'</when>
+				<when test="searchKeyword == 'cmpy' and pvCmpy != null">
+					PVCMPY LIKE '%' || #{pvCmpy} || '%'</when>
+			</choose>
+		</where>
+		order by PVCODE ASC) sub) t where rnum between #{startNO} and #{endNO}
+	</select>
+
+	<select id="countpvNameCmpy" resultType="int">
+		select count(*)
+		from ERPSLIPPV
+		<where>
+			<choose>
+				<when test="searchKeyword == 'name' and pvName != null">
+					PVNAME LIKE '%' || #{pvName} || '%'</when>
+				<when test="searchKeyword == 'cmpy' and pvCmpy != null">
+					PVCMPY LIKE '%' || #{pvCmpy} || '%'</when>
+			</choose>
+		</where>
+	</select>
+
+	<select id="selectByType" resultType="com.example.practice.vo.SlipVO">
+		SELECT t.* FROM (select sub.*, rownum as rnum from (select
+																PVCODE,
+																PVSLIPCODE,
+																PVNAME,
+																PVDATE,
+																PVSLIPNAME,
+																PVCMPY,
+																PVPRICE,
+																PVFEE,
+																PVPAY,
+																PVCOMMENT
+		                                                        from ERPSLIPPV where PVSLIPCODE = #{pvslipCode} order by PVCODE ASC) sub)
+		t where rnum between #{startNO} and #{endNO}
+	</select>
+	<select id="countByType" parameterType="String" resultType="int">
+		select COUNT(*)	from ERPSLIPPV where PVSLIPCODE = #{pvslipCode}
+	</select>
+	<delete id="delpvSlip" parameterType="int">
+		delete from ERPSLIPPV where PVCODE=#{pvCode}
+	</delete>
+	<insert id="rgInsert" parameterType="com.example.practice.vo.SlipVO">
+		insert into ERPSLIPRG (RGCODE, RGSLIPCODE, RGNAME, RGDATE, RGSLIPNAME, RGCMPY, RGPRICE, RGFEE, RGPAY, RGCOMMENT)
+		select rg_seq.NEXTVAL, PVSLIPCODE, PVNAME, PVDATE, PVSLIPNAME, PVCMPY, PVPRICE, PVFEE, PVPAY, PVCOMMENT
+		from ERPSLIPPV
+		where PVCODE = #{pvCode}
+	</insert>
+	<select id="selectrgAll" resultType="com.example.practice.vo.SliprgVO">
+		select t.* from (
+			select sub.*, rownum as rnum from (
+												  select
+													  RGCODE,
+													  RGSLIPCODE,
+													  RGNAME,
+													  RGDATE,
+													  RGSLIPNAME,
+													  RGCMPY,
+													  RGPRICE,
+													  RGFEE,
+													  RGPAY,
+													  RGCOMMENT
+												  from ERPSLIPRG order by RGCODE ASC
+											  ) sub
+		) t where rnum between #{startNo} and #{endNo}
+	</select>
+	<select id="totalCountRG" resultType="int">
+		select count(*) from ERPSLIPRG
+	</select>
+	<select id="selectrgNameCmpy" resultType="com.example.practice.vo.SliprgVO">
+		select t.* from (select sub.*, rownum as rnum from (select RGCODE,RGSLIPCODE,RGNAME,RGDATE,RGSLIPNAME,RGCMPY,RGPRICE,RGFEE,RGPAY,RGCOMMENT
+		from ERPSLIPRG
+		<where>
+			<choose>
+				<when test="searchKeyword == 'name' and rgName != null">
+					RGNAME LIKE '%' || #{rgName} || '%'</when>
+				<when test="searchKeyword == 'cmpy' and rgCmpy != null">
+					RGCMPY LIKE '%' || #{rgCmpy} || '%'</when>
+			</choose>
+		</where>
+		order by RGCODE ASC) sub) t where rnum between #{startNO} and #{endNO}
+	</select>
+
+	<select id="countrgNameCmpy" resultType="int">
+		select count(*)
+		from ERPSLIPRG
+		<where>
+			<choose>
+				<when test="searchKeyword == 'name' and rgName != null">
+					RGNAME LIKE '%' || #{rgName} || '%'</when>
+				<when test="searchKeyword == 'cmpy' and rgCmpy != null">
+					RGCMPY LIKE '%' || #{rgCmpy} || '%'</when>
+			</choose>
+		</where>
+	</select>
+	<select id="selectAllrgForExcel" resultType="com.example.practice.vo.SliprgVO">
+		select
+		RGCODE,
+		RGSLIPCODE,
+		RGNAME,
+		RGDATE,
+		RGSLIPNAME,
+		RGCMPY,
+		RGPRICE,
+		RGFEE,
+		RGPAY,
+		RGCOMMENT
+		from ERPSLIPRG
+		<where>
+			<choose>
+				<when test="searchKeyword == 'name' and rgName != null">
+					RGNAME LIKE '%' || #{rgName} || '%'</when>
+				<when test="searchKeyword == 'cmpy' and rgCmpy != null">
+					RGCMPY LIKE '%' || #{rgCmpy} || '%'</when>
+			</choose>
+		</where>
+		order by RGCODE ASC
+	</select>
+	<select id="selectByrgType" resultType="com.example.practice.vo.SliprgVO">
+		SELECT t.* FROM (select sub.*, rownum as rnum from (select
+																RGCODE,
+																RGSLIPCODE,
+																RGNAME,
+																RGDATE,
+																RGSLIPNAME,
+																RGCMPY,
+																RGPRICE,
+																RGFEE,
+																RGPAY,
+																RGCOMMENT from ERPSLIPRG where RGSLIPCODE = #{rgslipCode} order by RGCODE ASC) sub)
+							t where rnum between #{startNO} and #{endNO}
+	</select>
+	<select id="countByrgType" parameterType="String" resultType="int">
+		select COUNT(*)	from ERPSLIPRG where RGSLIPCODE = #{rgslipCode}
+	</select>
+	<select id="productSales" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate, jdbcType=DATE})
+			AND TO_DATE(#{endDate, jdbcType=DATE})
+		  AND RGSLIPNAME = '제품 매출'
+	</select>
+	<select id="serviceSales" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '서비스 매출'
+	</select>
+	<select id="otherSales" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '기타 수익'
+	</select>
+	<select id="interestSales" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '이자 수익'
+	</select>
+	<select id="supplyCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '소모품비'
+	</select>
+	<select id="shippingCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '운송비'
+	</select>
+	<select id="salaryCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '급여비'
+	</select>
+	<select id="wageCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '임금비'
+	</select>
+	<select id="mechanicalCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '기계장비'
+	</select>
+	<select id="inventoryCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '재고자산'
+	</select>
+	<select id="marketingCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '광고비'
+	</select>
+	<select id="printCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '인쇄비'
+	</select>
+	<select id="sellingCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '판매비'
+	</select>
+	<select id="maintainCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '관리비'
+	</select>
+	<select id="otherCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '기타 관리비'
+	</select>
+	<select id="depreciationCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '감가상각비'
+	</select>
+	<select id="stermDebt" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '단기부채 이자'
+	</select>
+	<select id="ltermDebt" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '장기부채 이자'
+	</select>
+	<select id="payableCost" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '미지급 비용'
+	</select>
+	<select id="payableWage" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGPRICE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+			AND TO_DATE(#{endDate,jdbcType=DATE})
+		  AND RGSLIPNAME = '미지급 급여'
+	</select>
+
+	<select id="sumupVAT" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+		SELECT NVL(SUM(RGFEE), 0)
+		FROM ERPSLIPRG
+		WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+				  AND TO_DATE(#{endDate,jdbcType=DATE})
+	</select>
+	<select id="grossProfit" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+	SELECT
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('제품 매출', '서비스 매출', '기타 수익', '이자 수익') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('소모품비', '운송비', '급여비', '임금비', '기계장비', '재고자산') THEN RGPRICE ELSE 0 END), 0) AS 매출총이익
+	FROM ERPSLIPRG
+	WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+	AND TO_DATE(#{endDate,jdbcType=DATE})
+	</select>
+	<select id="operatingIncome" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+	SELECT
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('제품 매출', '서비스 매출', '기타 수익', '이자 수익') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('소모품비', '운송비', '급여비', '임금비', '기계장비', '재고자산') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('광고비', '인쇄비','판매비','관리비','기타 관리비','감가상각비') THEN RGPRICE ELSE 0 END), 0)
+	AS 영업이익
+	FROM ERPSLIPRG
+	WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+	AND TO_DATE(#{endDate,jdbcType=DATE})
+	</select>
+	<select id="netIncome" parameterType="com.example.practice.vo.DateRangeVO" resultType="int">
+	SELECT
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('제품 매출', '서비스 매출', '기타 수익', '이자 수익') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('소모품비', '운송비', '급여비', '임금비', '기계장비', '재고자산') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('광고비', '인쇄비','판매비','관리비','기타 관리비','감가상각비') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(CASE WHEN RGSLIPNAME IN ('단기부채 이자','장기부채 이자','미지급 비용','미지급 급여') THEN RGPRICE ELSE 0 END), 0) -
+	NVL(SUM(RGFEE), 0)
+	AS 순이익
+	FROM ERPSLIPRG
+	WHERE RGDATE BETWEEN TO_DATE(#{startDate,jdbcType=DATE})
+	AND TO_DATE(#{endDate,jdbcType=DATE})
+	</select>
+	<select id="selectByDate" parameterType="com.example.practice.vo.DateRangeVO" resultType="com.example.practice.vo.SliprgVO">
+		select * from ERPSLIPRG where RGDATE between to_date(#{startDate, jdbcType=DATE})
+										  AND TO_DATE(#{endDate, jdbcType=DATE}) ORDER BY RGDATE
+	</select>
+	<select id="selectEmail" resultType="String">
+		select ERPEMAIL from erpMember where ERPID = #{erpId}
+	</select>
+	<select id="selectName" resultType="String">
+		select ERPNAME from ERPMEMBER where ERPID = #{erpId}
+	</select>
+</mapper>

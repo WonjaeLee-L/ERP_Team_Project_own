@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+
+/* 기본 바디 스타일 */
+body {
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 컨테이너 기본 스타일링 */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px; /* 패딩 증가: 20px → 30px */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 부드럽게 */
+    border-radius: 12px; /* 둥글기 증가: 8px → 12px */
+}
+
+/* 제목 스타일링 */
+h1 {
+    text-align: center;
+    color: #2c3e50; /* 색상 변경: #333 → #2c3e50 */
+    margin-bottom: 30px; /* 여백 추가 */
+    font-size: 28px; /* 폰트 크기 명시 */
+}
+#topline {
+    padding-bottom: 50px;
+}
+
+/* 새로 추가: 폼과 버튼 배치 컨트롤 */
+.container > form, .container > button {
+    display: inline-block;
+}
+
+/* 새로 추가: 날짜 폼 왼쪽 배치 */
+#dateSubmit {
+    float: left;
+}
+
+/* 새로 추가: 다운로드 버튼들 오른쪽 배치 */
+#excelForm, #pdfdownload, #pdfemail {
+    float: right;
+    margin-left: 10px;
+}
+
+/* 새로 추가: float 해제를 위한 clearfix */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 날짜 입력 필드 스타일링 */
+input[type="date"] {
+    padding: 8px 12px; /* 패딩 추가 */
+    border: 2px solid #A8D5BA;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* 버튼 공통 스타일링 */
+button, input[type="submit"] {
+    padding: 8px 16px;
+    background-color: #A8D5BA;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* 호버 효과 추가 */
+}
+
+/* 버튼 호버 효과 */
+button:hover, input[type="submit"]:hover {
+    background-color: #8fc3a3; /* 호버 색상 추가 */
+}
+
+/* 섹션 제목 스타일링 */
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 30px 0 15px 0;
+    padding-left: 10px;
+    border-left: 4px solid #A8D5BA; /* 왼쪽 경계선 추가 */
+    clear: both; /* 새로 추가: float 해제 */
+}
+
+/* 테이블 기본 스타일링 */
+table {
+    width: 100%;
+    border-collapse: separate; /* collapse → separate 변경 */
+    border-spacing: 0;
+    margin: 15px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden; /* 테이블 모서리 처리 */
+}
+
+/* 테이블 헤더 스타일링 */
+th {
+    background-color: #A8D5BA;
+    color: #fff;
+    padding: 12px 15px; /* 패딩 증가: 10px → 12px 15px */
+    font-weight: 500;
+}
+th:first-child {
+    width: 70%; /* 항목 열 */
+}
+
+th:last-child {
+    width: 30%; /* 금액 열 */
+}
+
+/* 테이블 셀 스타일링 */
+td {
+    padding: 12px 15px; /* 패딩 증가 */
+    border-bottom: 1px solid #e0e0e0;
+}
+/* 두번 째 열은 오른 쪽으로 정렬 */
+td:last-child {
+    text-align: right;
+}
+
+/* 테이블 마지막 행 스타일링 */
+tr:last-child td {
+    border-bottom: none; /* 마지막 행 경계선 제거 */
+}
+
+/* 테이블 행 호버 효과 */
+tr:hover {
+    background-color: #f8f9fa; /* 호버 효과 추가 */
+}
+
+/* 프린트 스타일링 */
+@media print {
+    .container {
+        box-shadow: none;
+    }
+    button {
+        display: none;
+    }
+    #searchDate {
+        display: none;
+    }
+    @page {
+        margin: 0;
+        size: A4;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}

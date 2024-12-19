@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Slip pre-registered List</title>
+    <link rel="stylesheet" href="../css/slipList.css">
+    <style>
+    </style>
+</head>
+<body>
+<h1>결재 승인 대기 전표 리스트</h1>
+
+<!-- 데이터 목록 표시용 테이블 -->
+<table id="slip-list">
+    <thead>
+    <tr>
+        <th>전표 코드</th>
+        <th>
+            <div id="dropdown-filter">
+                <select id="type-select" onchange="filterByType(this.value)">
+                    <option value="">전표타입</option>
+                    <option value="selectAll">전체</option>
+                    <option value="sales">매출</option>
+                    <option value="cost">비용</option>
+                    <option value="asset">자산</option>
+                    <option value="liability">부채</option>
+                </select>
+            </div>
+        </th>
+        <th>작성자</th>
+        <th>등록 날짜</th>
+        <th>계정과목</th>
+        <th>거래처명</th>
+        <th>금액</th>
+        <th>부가세</th>
+        <th>결제 수단</th>
+        <th>적요</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 슬립 목록을 Thymeleaf로 출력 -->
+    <tr th:each="slip, status : ${slips}"
+        th:with="index=${(pagevo.page - 1) * 10 + status.count}">
+<!--        <td>-->
+<!--            <input type="checkbox">-->
+<!--        </td>-->
+        <td th:text="${slip.pvCode}"></td>
+        <td th:text="${slip.pvslipCode}"></td>
+        <td th:text="${slip.pvName}"></td>
+        <td th:text="${slip.pvDate}"></td>
+        <td th:text="${slip.pvslipName}"></td>
+        <td th:text="${slip.pvCmpy}"></td>
+        <td th:text="${slip.pvPrice}"></td>
+        <td th:text="${slip.pvFee}"></td>
+        <td th:text="${slip.pvPay}"></td>
+        <td th:text="${slip.pvComment}"></td>
+        <td>
+            <form action="/rgInsert" method="post" style="display:inline;">
+                <input type="hidden" name="pvCode" th:value="${slip.pvCode}" />
+                <input type="hidden" name="rgslipCode" th:value="${slip.pvslipCode}" />
+                <input type="hidden" name="rgName" th:value="${slip.pvName}" />
+                <input type="hidden" name="rgDate" th:value="${slip.pvDate}" />
+                <input type="hidden" name="rgslipName" th:value="${slip.pvslipName}" />
+                <input type="hidden" name="rgCmpy" th:value="${slip.pvCmpy}" />
+                <input type="hidden" name="rgPrice" th:value="${slip.pvPrice}" />
+                <input type="hidden" name="rgFee" th:value="${slip.pvFee}" />
+                <input type="hidden" name="rgPay" th:value="${slip.pvPay}" />
+                <input type="hidden" name="rgComment" th:value="${slip.pvComment}" />
+                <button class="btn btn-secondary" th:onclick="">승인</button>
+            </form>
+        <td>
+            <form action="/delpvSlip" method="post" style="display:inline;">
+                <input type="hidden" name="pvCode" th:value="${slip.pvCode}" />
+                <button type="submit" class="btn btn-secondary">삭제</button>
+            </form>
+        </td>
+
+        <!--            <button class="btn btn-secondary"-->
+<!--                    th:onclick="'deleteSlip(' + ${slip.pvCode} + ')'">삭제</button>-->
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!--    <div class="pagination-container">-->
+<!--        &lt;!&ndash; 이전 페이지 그룹 &ndash;&gt;-->
+<!--        <a th:if="${pagevo.prev}"-->
+<!--           th:href="@{/slistView(page=${pagevo.startPage - 1})}"-->
+<!--           class="pagination-group">-->
+<!--            <span>◀ 이전</span>-->
+<!--        </a>-->
+
+<!--        &lt;!&ndash; 페이지 번호 순회 &ndash;&gt;-->
+<!--        <div th:each="idx : ${#numbers.sequence(pagevo.startPage, pagevo.endPage)}">-->
+<!--            <a th:href="@{/slistView(page=${idx})}"-->
+<!--               th:text="${idx}"-->
+<!--               th:class="${pagevo.page == idx} ? 'pagination-link active' : 'pagination-link'">-->
+<!--            </a>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; 다음 페이지 그룹 &ndash;&gt;-->
+<!--        <a th:if="${pagevo.next}"-->
+<!--           th:href="@{/slistView(page=${pagevo.endPage + 1})}"-->
+<!--           class="pagination-group">-->
+<!--            <span>다음 ▶</span>-->
+<!--        </a>-->
+<!--    </div>-->
+<div class="pagination-container">
+    <!-- 이전 페이지 그룹 -->
+    <a th:if="${pagevo.prev}"
+       th:href="@{/search(page=${pagevo.startPage - 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+       class="pagination-group">
+        <span>◀ 이전</span>
+    </a>
+
+    <!-- 페이지 번호 순회 -->
+    <div th:each="idx : ${#numbers.sequence(pagevo.startPage, pagevo.endPage)}">
+        <a th:href="@{/search(page=${idx}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+           th:text="${idx}"
+           th:class="${pagevo.page == idx} ? 'pagination-link active' : 'pagination-link'">
+        </a>
+    </div>
+
+    <!-- 다음 페이지 그룹 -->
+    <a th:if="${pagevo.next}"
+       th:href="@{/search(page=${pagevo.endPage + 1}, searchKeyword=${param.searchKeyword}, pvtext=${param.pvtext})}"
+       class="pagination-group">
+        <span>다음 ▶</span>
+    </a>
+</div>
+<form id="searchbox" name="searchbox" action="/search" method="get" onsubmit="return validateSearch()">
+    <select id="searchkeyword" name="searchKeyword" onchange="updatePlaceholder()">
+        <option value="selectplz">선택하세요</option>
+        <option value="name">작성자</option>
+        <option value="cmpy">거래처명</option>
+    </select>
+
+
+    <input type="text" id="pvtext" name="pvtext" placeholder="검색할 항목을 선택해주세요.">
+    <input type="submit" id="pvsubmit" value="검색">
+
+
+</form>
+<script>
+    function validateSearch() {
+        const searchKeyword = document.getElementById('searchkeyword').value;
+        const pvText = document.getElementById('pvtext').value.trim();
+
+        if (searchKeyword === 'selectplz') {
+            alert("검색 항목을 선택해주세요.");
+            return false;
+        }
+
+        if (!pvText) {
+            alert("검색어를 올바르게 입력해 주세요.");
+            return false;
+        }
+
+        return true;
+    }
+
+    function updatePlaceholder() {
+        const searchKeyword = document.getElementById('searchkeyword').value;
+        const pvText = document.getElementById('pvtext');
+
+        if (searchKeyword === 'name') {
+            pvText.placeholder = '작성자명을 입력해주세요';
+        } else if (searchKeyword === 'cmpy') {
+            pvText.placeholder = '거래처명을 입력해주세요';
+        }
+    }
+
+    function filterByType(pvslipCode) {
+        if(pvslipCode === 'selectAll') {
+            window.location.href = '/slistView';
+        } else if(pvslipCode === 'sales' ||
+            pvslipCode === 'cost' ||
+            pvslipCode === 'asset' ||
+            pvslipCode === 'liability') {
+            window.location.href = `/slips?pvslipCode=${pvslipCode}`;
+        }
+    }
+
+// function deleteSlip(pvCode) {
+//     if (confirm("정말로 이 전표를 삭제하시겠습니까?")) {
+//         fetch(`/delpvSlip`, {  // 경로 수정
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded'
+//             },
+//             body: `pvCode=${pvCode}`
+//         })
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data === "Delete successful") {
+//                     alert("삭제가 완료되었습니다.");
+//                     location.reload();
+//                 } else {
+//                     alert("삭제 중 오류가 발생했습니다.");
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error:', error);
+//                 alert("삭제 요청 중 오류가 발생했습니다.");
+//             });
+//     }
+// }
+// function filterByType(selectedType) {
+//     if(selectedType) {
+//         fetch(`/slips?type=${selectedType}`)
+//             .then(response => response.json())
+//             .then(data => {
+//                 console.log("필터링 된 데이터: ",data);
+//
+//             })
+//     }
+// }
+</script>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>incomeStatement</title>
+<!--  <link rel="stylesheet" href="../css/incomeStatement.css">-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'Noto Sans KR';
+      src: url('https://fonts.gstatic.com/s/notosanskr/v27/PbykFmXiEBPT4ITbgNA5Cgm203Tq4JJWq209pU0DPdWuqxJFA4GNDCBYtw.0.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 기본 바디 스타일 */
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* 컨테이너 기본 스타일링 */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px; /* 패딩 증가: 20px → 30px */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 부드럽게 */
+      border-radius: 12px; /* 둥글기 증가: 8px → 12px */
+    }
+
+    /* 제목 스타일링 */
+    h1 {
+      text-align: center;
+      color: #2c3e50; /* 색상 변경: #333 → #2c3e50 */
+      margin-bottom: 30px; /* 여백 추가 */
+      font-size: 28px; /* 폰트 크기 명시 */
+    }
+    #topline {
+      padding-bottom: 50px;
+    }
+
+    /* 새로 추가: 폼과 버튼 배치 컨트롤 */
+    .container > form, .container > button {
+      display: inline-block;
+    }
+
+    /* 새로 추가: 날짜 폼 왼쪽 배치 */
+    #dateSubmit {
+      float: left;
+    }
+
+    /* 새로 추가: 다운로드 버튼들 오른쪽 배치 */
+    #excelForm, #pdfdownload, #pdfemail {
+      float: right;
+      margin-left: 10px;
+    }
+
+    /* 새로 추가: float 해제를 위한 clearfix */
+    .container::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    /* 날짜 입력 필드 스타일링 */
+    input[type="date"] {
+      padding: 8px 12px; /* 패딩 추가 */
+      border: 2px solid #A8D5BA;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* 버튼 공통 스타일링 */
+    button, input[type="submit"] {
+      padding: 8px 16px;
+      background-color: #A8D5BA;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s; /* 호버 효과 추가 */
+    }
+
+    /* 버튼 호버 효과 */
+    button:hover, input[type="submit"]:hover {
+      background-color: #8fc3a3; /* 호버 색상 추가 */
+    }
+
+    /* 섹션 제목 스타일링 */
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 30px 0 15px 0;
+      padding-left: 10px;
+      border-left: 4px solid #A8D5BA; /* 왼쪽 경계선 추가 */
+      clear: both; /* 새로 추가: float 해제 */
+    }
+
+    /* 테이블 기본 스타일링 */
+    table {
+      width: 100%;
+      border-collapse: separate; /* collapse → separate 변경 */
+      border-spacing: 0;
+      margin: 15px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden; /* 테이블 모서리 처리 */
+    }
+
+    /* 테이블 헤더 스타일링 */
+    th {
+      background-color: #A8D5BA;
+      color: #fff;
+      padding: 12px 15px; /* 패딩 증가: 10px → 12px 15px */
+      font-weight: 500;
+    }
+    th:first-child {
+      width: 70%; /* 항목 열 */
+    }
+
+    th:last-child {
+      width: 30%; /* 금액 열 */
+    }
+
+    /* 테이블 셀 스타일링 */
+    td {
+      padding: 12px 15px; /* 패딩 증가 */
+      border-bottom: 1px solid #e0e0e0;
+    }
+    /* 두번 째 열은 오른 쪽으로 정렬 */
+    td:last-child {
+      text-align: right;
+    }
+
+    /* 테이블 마지막 행 스타일링 */
+    tr:last-child td {
+      border-bottom: none; /* 마지막 행 경계선 제거 */
+    }
+
+    /* 테이블 행 호버 효과 */
+    tr:hover {
+      background-color: #f8f9fa; /* 호버 효과 추가 */
+    }
+
+    .page {
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 50px;
+    }
+
+    @media print {
+      .page {
+        position: relative;
+        padding: 10px;
+        margin: 0;
+      }
+      /* 테이블 여백 축소 */
+      table {
+        margin: 8px 0;
+      }
+
+      /* 섹션 타이틀 여백 축소 */
+      .section-title {
+        margin: 15px 0 8px 0;
+      }
+
+      /* 테이블 셀 padding 축소 */
+      td, th {
+        padding: 8px 10px;
+      }
+      .container {
+        box-shadow: none;
+      }
+      button {
+        display: none;
+      }
+      #dateSubmit {
+        display: none;
+      }
+      @page {
+        margin: 0;
+        size: A4;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+<div class="page page1">
+  <h1>손익 계산서</h1>
+  <div id="topline">
+  <form id="dateSubmit" name="dateSubmit" action="/getincomevalues" method="get">
+    <input type="date" id="startDate" name="startDate" th:value="${startDate}">
+    <span id="wave">~</span>
+    <input type="date" id="endDate" name="endDate" th:value="${endDate}">
+    <input type="submit" id="searchDate" value="조회">
+  </form>
+  <form id="excelForm" action="/incomedownload" method="get">
+    <button type="submit" id="excelsubmit">리스트 다운로드</button>
+  </form>
+  <button type="button" id="pdfdownload" onclick="printIncomeStatement()">손익계산서 다운로드</button>
+  <button type="button" id="pdfemail" onclick="emailIncomeStatement()">손익계산서 이메일</button>
+  </div>
+  <!-- 매출 (Revenue) -->
+  <div class="section-title">1. 매출 (Revenue)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>제품 매출</td>
+      <td class="highlight" id="productSales" th:text="'₩ ' + (${productSales} != null ? ${productSales} : 0)">₩ 0</td>
+
+    </tr>
+    <tr>
+      <td>서비스 매출</td>
+      <td class="highlight" id="serviceSales" th:text="'₩ ' + (${serviceSales} != null ? ${serviceSales} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>기타 수익</td>
+      <td class="highlight" id="otherSales" th:text="'₩ ' + (${otherSales} != null ? ${otherSales} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>이자 수익</td>
+      <td class="highlight" id="interestSales" th:text="'₩ ' + (${interestSales} != null ? ${interestSales} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+  <!-- 매출원가 (Cost of Goods Sold, COGS) -->
+  <div class="section-title">2. 매출원가 (COGS)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>소모품비</td>
+      <td class="highlight" id="supplyCost" th:text="'₩ ' + (${supplyCost} != null ? ${supplyCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>운송비</td>
+      <td class="highlight" id="shippingCost" th:text="'₩ ' + (${shippingCost} != null ? ${shippingCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>급여비 (제조직 근로자 급여)</td>
+      <td class="highlight" id="salaryCost" th:text="'₩ ' + (${salaryCost} != null ? ${salaryCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>임금비 (제조직 근로자 임금)</td>
+      <td class="highlight" id="wageCost" th:text="'₩ ' + (${wageCost} != null ? ${wageCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>기계장비 (감가상각비)</td>
+      <td class="highlight" id="mechanicalCost" th:text="'₩ ' + (${mechanicalCost} != null ? ${mechanicalCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>재고자산 (판매된 재고의 원가)</td>
+      <td class="highlight" id="inventoryCost" th:text="'₩ ' + (${inventoryCost} != null ? ${inventoryCost} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+
+  <!-- 매출 총이익 (Gross Profit) -->
+  <div class="section-title">3. 매출 총이익 (Gross Profit)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>매출 - 매출원가</td>
+      <td class="highlight" id="grossProfit" th:text="'₩ ' + (${grossProfit} != null ? ${grossProfit} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+  <!-- 판매비와 관리비 (SG&A) -->
+  <div class="section-title">4. 판매비와 관리비 (SG&A)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>광고비</td>
+      <td class="highlight" id="marketingCost" th:text="'₩ ' + (${marketingCost} != null ? ${marketingCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>인쇄비</td>
+      <td class="highlight" id="printCost" th:text="'₩ ' + (${printCost} != null ? ${printCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>판매비</td>
+      <td class="highlight" id="sellingCost" th:text="'₩ ' + (${sellingCost} != null ? ${sellingCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>관리비</td>
+      <td class="highlight" id="maintainCost" th:text="'₩ ' + (${maintainCost} != null ? ${maintainCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>기타 관리비</td>
+      <td class="highlight" id="otherCost" th:text="'₩ ' + (${otherCost} != null ? ${otherCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>감가상각비 (관리자산 관련)</td>
+      <td class="highlight" id="depreciationCost" th:text="'₩ ' + (${depreciationCost} != null ? ${depreciationCost} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+  <!-- 영업이익 (Operating Income) -->
+  <div class="section-title">5. 영업이익 (Operating Income)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>매출 총이익 - 판매비와 관리비</td>
+      <td class="highlight" id="operatingIncome" th:text="'₩ ' + (${operatingIncome} != null ? ${operatingIncome} : 0)">₩ 0</td>
+    </tr>
+  </table>
+</div>
+
+  <!-- 기타 비용 -->
+  <div class="page page2">
+  <div class="section-title">6. 기타 비용</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>단기부채 이자</td>
+      <td class="highlight" id="stermDebt" th:text="'₩ ' + (${stermDebt} != null ? ${stermDebt} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>장기부채 이자</td>
+      <td class="highlight" id="ltermDebt" th:text="'₩ ' + (${ltermDebt} != null ? ${ltermDebt} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>미지급 비용</td>
+      <td class="highlight" id="payableCost" th:text="'₩ ' + (${payableCost} != null ? ${payableCost} : 0)">₩ 0</td>
+    </tr>
+    <tr>
+      <td>미지급 급여</td>
+      <td class="highlight" id="payableWage" th:text="'₩ ' + (${payableWage} != null ? ${payableWage} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+  <!-- 부가세 (VAT) -->
+  <div class="section-title">7. 부가세 (VAT)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr>
+      <td>부가세</td>
+      <td class="highlight" id="sumupVAT" th:text="'₩ ' + (${sumupVAT} != null ? ${sumupVAT} : 0)">₩ 0</td>
+    </tr>
+  </table>
+
+  <!-- 순이익 (Net Income) -->
+  <div class="section-title">8. 순이익 (Net Income)</div>
+  <table>
+    <tr>
+      <th>항목</th>
+      <th>금액</th>
+    </tr>
+    <tr class="total-row">
+      <td>영업이익 - 기타 비용 - 부가세</td>
+      <td class="highlight" id="netIncome" th:text="'₩ ' + (${netIncome} != null ? ${netIncome} : 0)">₩ 0</td>
+    </tr>
+  </table>
+</div>
+</div>
+
+</body>
+</html>
+<script>
+  document.getElementById('dateSubmit').onsubmit = function(e) {
+    e.preventDefault();
+    fetchIncomeStatement();
+  };
+  function fetchIncomeStatement() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    fetch(`/getincomevalues?startDate=${startDate}&endDate=${endDate}`)
+            .then(response => response.json())
+            .then(data => {
+              updateValue('productSales', data.productSales);
+              updateValue('serviceSales', data.serviceSales);
+              updateValue('otherSales', data.otherSales);
+              updateValue('interestSales', data.interestSales);
+              updateValue('supplyCost', data.supplyCost);
+              updateValue('shippingCost', data.shippingCost);
+              updateValue('salaryCost', data.salaryCost);
+              updateValue('wageCost', data.wageCost);
+              updateValue('mechanicalCost', data.mechanicalCost);
+              updateValue('inventoryCost', data.inventoryCost);
+              updateValue('grossProfit', data.grossProfit);
+              updateValue('marketingCost', data.marketingCost);
+              updateValue('printCost', data.printCost);
+              updateValue('sellingCost', data.sellingCost);
+              updateValue('maintainCost', data.maintainCost);
+              updateValue('otherCost', data.otherCost);
+              updateValue('depreciationCost', data.depreciationCost);
+              updateValue('operatingIncome', data.operatingIncome);
+              updateValue('stermDebt', data.stermDebt);
+              updateValue('ltermDebt', data.ltermDebt);
+              updateValue('payableCost', data.payableCost);
+              updateValue('payableWage', data.payableWage);
+              updateValue('sumupVAT', data.sumupVAT);
+              updateValue('netIncome', data.netIncome);
+            })
+            .catch(error => {
+              console.error('Error fetching income statement:', error);
+              alert('데이터 조회 중 오류가 발생했습니다.');
+            });
+  }
+
+  function updateValue(id, value) {
+    const safeValue = value ?? 0;
+    const elements = document.querySelectorAll('td.highlight');
+    elements.forEach(element => {
+      const label = element.previousElementSibling.textContent.trim();
+
+      switch (id) {
+        case 'productSales':
+          if (label === '제품 매출') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'serviceSales':
+          if (label === '서비스 매출') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'otherSales':
+          if (label === '기타 수익') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'interestSales':
+          if (label === '이자 수익') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'supplyCost':
+          if (label === '소모품비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'shippingCost':
+          if (label === '운송비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'salaryCost':
+          if (label === '급여비 (제조직 근로자 급여)') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'wageCost':
+          if (label === '임금비 (제조직 근로자 임금)') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'mechanicalCost':
+          if (label === '기계장비 (감가상각비)') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'inventoryCost':
+          if (label === '재고자산 (판매된 재고의 원가)') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'grossProfit':
+          if (label === '매출 - 매출원가') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'marketingCost':
+          if (label === '광고비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'printCost':
+          if (label === '인쇄비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'sellingCost':
+          if (label === '판매비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'maintainCost':
+          if (label === '관리비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'otherCost':
+          if (label === '기타 관리비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'depreciationCost':
+          if (label === '감가상각비 (관리자산 관련)') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'operatingIncome':
+          if (label === '매출 총이익 - 판매비와 관리비') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'stermDebt':
+          if (label === '단기부채 이자') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'ltermDebt':
+          if (label === '장기부채 이자') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'payableCost':
+          if (label === '미지급 비용') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'payableWage':
+          if (label === '미지급 급여') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'sumupVAT':
+          if (label === '부가세') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+        case 'netIncome':
+          if (label === '영업이익 - 기타 비용 - 부가세') {
+            element.textContent = `₩ ${value.toLocaleString()}`;
+          }
+          break;
+      }
+    });
+  }
+
+  function printIncomeStatement() {
+    window.focus();
+    window.print();
+  }
+
+  async function emailIncomeStatement() {
+    try {
+      const pages = document.querySelectorAll('.page');
+
+      // 페이지 캡처
+      const images = await Promise.all(
+              Array.from(pages).map(async (page, index) => {
+                const canvas = await html2canvas(page, {
+                  scale: 2,
+                  useCORS: true,
+                  logging: false,
+                  backgroundColor: '#ffffff',
+                  onclone: doc => {
+                    if (index === 0) {
+                      ['dateSubmit', 'excelForm', 'pdfdownload', 'pdfemail'].forEach(id => {
+                        doc.getElementById(id).style.display = 'none';
+                      });
+                    }
+                  }
+                });
+                return canvas.toDataURL('image/jpeg', 0.95);
+              })
+      );
+
+      // 이메일 전송
+      const response = await fetch('/mailSend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images })
+      });
+
+      if (!response.ok) {
+        alert('이메일 전송 실패')
+      } else {
+      alert('이메일이 성공적으로 전송되었습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('이메일 전송에 실패하였습니다.');
+    }
+  }
+
+  // document.getElementById('dateSubmit').onsubmit = function(e) {
+  //     e.preventDefault();
+  //     fetchAndUpdateIncomeStatement();
+  //   };
+  //
+  // function fetchAndUpdateIncomeStatement() {
+  //   const startDate = document.getElementById('startDate').value;
+  //   const endDate = document.getElementById('endDate').value;
+  //
+  //   fetch(`/getincomevalues?startDate=${startDate}&endDate=${endDate}`)
+  //           .then(response => response.json())
+  //           .then(data => {
+  //             updateValue('productSales', data.SCAL);
+  //             updateValue('serviceSales', data.SCAL);
+  //             updateValue('otherSales', data.SCAL);
+  //             updateValue('interestSales', data.SCAL);
+  //             updateValue('supplyCost', data.SCAL);
+  //             updateValue('shippingCost', data.SCAL);
+  //             updateValue('salaryCost', data.SCAL);
+  //             updateValue('wageCost', data.SCAL);
+  //             updateValue('mechanicalCost', data.SCAL);
+  //             updateValue('inventoryCost', data.SCAL);
+  //             updateValue('grossProfit', data.grossProfit);
+  //             updateValue('marketingCost', data.SCAL);
+  //             updateValue('printCost', data.SCAL);
+  //             updateValue('sellingCost', data.SCAL);
+  //             updateValue('maintainCost', data.SCAL);
+  //             updateValue('otherCost', data.SCAL);
+  //             updateValue('depreciationCost', data.SCAL);
+  //             updateValue('operatingIncome', data.operatingIncome);
+  //             updateValue('stermDebt', data.SCAL);
+  //             updateValue('ltermDebt', data.SCAL);
+  //             updateValue('payableCost', data.SCAL);
+  //             updateValue('payableWage', data.SCAL);
+  //             updateValue('sumupVAT', data.sumupVAT);
+  //             updateValue('netIncome', data.netIncome);
+  //             Object.keys(data).forEach(key => {
+  //               const element = document.getElementById(key);
+  //               if (element) {
+  //                 element.textContent = `₩ ${data[key].toLocaleString()}`;
+  //               }
+  //             });
+  //           })
+  //           .catch(error => {
+  //             console.error('Error fetching income statement:', error);
+  //             alert('데이터 조회 중 오류가 발생했습니다.');
+  //           });
+
+    // const slipTypes = {
+    //   'productSales': '제품 매출',
+    //   'serviceSales': '서비스 매출',
+    //   'otherSales': '기타 수익',
+    //   'interestSales': '이자 수익',
+    //   'supplyCost' : '소모품비',
+    //   'shippingCost' : '운송비',
+    //   'salaryCost' : '급여비 (제조직 근로자 급여)',
+    //   'wageCost' : '임금비 (제조직 근로자 임금)',
+    //   'mechanicalCost' : '기계장비 (감가상각비)',
+    //   'inventoryCost' : '재고자산 (판매된 재고의 원가)',
+    //   'marketingCost' : '광고비',
+    //   'printCost' : '인쇄비',
+    //   'sellingCost' : '판매비',
+    //   'maintainCost' : '관리비',
+    //   'otherCost' : '기타 관리비',
+    //   'depreciationCost' : '감가상각비 (관리자산 관련)',
+    //   'stermDebt' : '단기부채 이자',
+    //   'ltermDebt' : '장기부채 이자',
+    //   'payableCost' : '미지급 비용',
+    //   'payableWage' : '미지급 급여'
+    // };
+
+    //   const promises = Object.entries(slipTypes).map(([key, slipName]) => {
+    //     return fetch(`/getincomevalues?startDate=${startDate}&endDate=${endDate}&slipName=${encodeURIComponent(slipName)}`)
+    //             .then(response => response.json())
+    //             .then(data => ({[key]: data}));
+    //   });
+    //
+    //   // 모든 요청이 완료되면 데이터 업데이트
+    //   Promise.all(promises)
+    //           .then(results => {
+    //             const data = Object.assign({}, ...results);
+    //             updateAllValues(data);
+    //           })
+    //           .catch(error => {
+    //             console.error('Error fetching income statement:', error);
+    //             alert('데이터 조회 중 오류가 발생했습니다.');
+    //           });
+    // }
+
+  //   function updateAllValues(data) {
+  //     document.querySelectorAll('td.highlight').forEach(element => {
+  //       const label = element.previousElementSibling.textContent.trim();
+  //       const value = data[Object.keys(data).find(key =>
+  //               element.id === key
+  //       )];
+  //
+  //       if (value !== undefined) {
+  //         element.textContent = `₩ ${value.toLocaleString()}`;
+  //       }
+  //     });
+  //   }
+  // }
+</script>

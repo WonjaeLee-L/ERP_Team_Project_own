@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}"/>
+<!--    <link rel="stylesheet" href="/css/loginMenu.css">-->
+    <title>로그인 화면</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9fc79f;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .label_modal{
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .login-container {
+            background-color: #cfedcb;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .login-container img {
+            width: 300px;
+            height: auto;
+            margin-bottom: -40px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: #335933;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #335933;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn1{
+            width: 30%;
+            padding: 10px;
+            background-color: #ababab;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+
+        }
+        .btn:hover {
+            background-color: #335933;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .extra-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .extra-links a {
+            display: block;
+            color: #000000;
+            text-decoration: none;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+        .modal{
+            position:absolute;
+            display: none;
+
+            justify-content: center;
+            top:0;
+            left:0;
+
+            background-color: #cfedcb;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            height: 600px;
+            text-align: left;
+        }
+        .modal input{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .subMsg{
+            font-size: 0.8rem;
+            color: red;
+            display:block;
+        }
+        .olmessagef {font-size: 0.8rem; color: red;}
+        .olmessaget {font-size: 0.8rem; color: blue;}
+    </style>
+
+</head>
+<body>
+<header>
+
+</header>
+<main>
+    <div class="login-container">
+        <img src="/image/logo.jpg" alt="Logo">
+        <!-- 로그인 실패로 인해 URL에 error 파라미터가 있을 때만 해당 div를 보여주는 조건부 렌더링 -->
+        <div th:if="${param.error}" class="error-message">
+            아이디 또는 비밀번호가 일치하지 않습니다.
+        </div>
+        <form id="login-form" action="/login" method="POST">
+            <div class="input-group">
+                <label for="erpId">아이디</label>
+                <input type="text" id="erpId" name="erpId" placeholder="아이디 입력" required>
+            </div>
+            <div class="input-group">
+                <label for="erpPass">비밀번호</label>
+                <input type="password" id="erpPass" name="erpPass" placeholder="비밀번호 입력" required>
+            </div>
+            <button type="submit" class="btn">로그인</button>
+            <div class="error-message" id="error-message"></div>
+        </form>
+        <!--        <a href="#" class="forgot-password">비밀번호를 잊으셨나요?</a>-->
+        <div class="extra-links">
+<!--            <button type="submit" class="btn1"><a href="#" id="customer-link">거래처용</a></button>-->
+
+            <button type="submit" class="btn1"><a href="#" id="signup-link">회원가입</a></button>
+
+        </div>
+    </div>
+</main>
+
+<div class="modal">
+    <div class="modal_body">
+        <h2 style="display: flex">회원가입</h2>
+        <form action="/loginSignup" method="post" id="signupForm" onsubmit="submitSignup(event)">
+            <table>
+                <tr>
+                    <td><label class="label_modal" for="getid">아이디</label></td>
+                    <td><input type="text" id="getid" name="erpId"></td>
+                    <td><button type="button" onclick="Check()">아이디 중복체크</button></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span id="olmessage"></span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getpwd">비밀번호</label></td>
+                    <td><input type="password" id="getpwd" name="erpPass"></td>
+                    <td><button type="button" onclick="chkPW()">유효성체크</button></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span class="subMsg">10자리~20자리 이내로 입력해주세요</span>
+                        <span class="subMsg">공백 없이 입력해주세요</span>
+                        <span class="subMsg">영문,숫자,특수문자 혼합하여 입력해주세요</span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="checkpwd">비밀번호 확인</label></td>
+                    <td><input type="password" id="checkpwd" name="chkpass"></td>
+                    <td><button type="button" onclick="chkEQ()">입력 일치 확인</button></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getname">이름</label></td>
+                    <td><input type="text" id="getname" name="erpName"></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="gettel">전화번호</label></td>
+                    <td>
+                        <input style="display: inline" type="tel" id="gettel" name="erpTel" size="4">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getmail">이메일</label></td>
+                    <td><input type="email" id="getmail" name="erpEmail"></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getaddr">주소</label></td>
+                    <td><input type="text" id="getaddr" name="erpAddress"></td>
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getcpn">소속회사</label></td>
+                    <td>
+                        <select name="erpCompanyCode" id="getcpn">
+                            <option value="쿠팡">쿠팡</option>
+                            <option value="거성건설">거성건설</option>
+                            <option value="씨이엠컴퍼니">씨이엠컴퍼니</option>
+                            <option value="현대">현대</option>
+                        </select>
+                    </td>
+                    <!--                    <td><input type="text" id="getcpn" name="company_code"></td>-->
+                </tr>
+                <tr>
+                    <td><label class="label_modal" for="getdpt">소속부서</label></td>
+                    <td>
+                        <select name="erpDepartmentCode" id="getdpt">
+                            <option value="인사부">인사부</option>
+                            <option value="기획부">기획부</option>
+                            <option value="회계부">회계부</option>
+                            <option value="총무부">총무부</option>
+                        </select>
+                    </td>
+                    <!--                    <td><input type="text" id="getdpt" name="department_code"></td>-->
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit" class="btn" style="width: 50%">회원가입</button>
+                        <button type="button" class="btn" style="width: 30%" id="cancelModalBtn">취소</button></td>
+                    <td></td>
+                </tr>
+            </table>
+
+        </form>
+
+    </div>
+</div>
+</body>
+<script>
+    function chkPW(){
+        var pw = $("#getpwd").val();
+        var hasNum = /[0-9]/.test(pw);
+        var hasEng = /[a-zA-Z]/.test(pw);
+        var hasSpe = /[`~!@#$%^&*|₩'";:/?]/.test(pw);
+
+        if(pw.length < 10 || pw.length > 20){
+            alert("10자리 ~ 20자리 이내로 입력해주세요.");
+            return false;
+        }
+
+        if(pw.search(/\s/) != -1){
+            alert("비밀번호는 공백 없이 입력해주세요.");
+            return false;
+        }
+
+        if (!hasSpe) {
+            alert("특수문자를 반드시 포함해야 합니다.");
+            return false;
+        }
+
+        if (!hasEng && !hasNum) {
+            alert("영문 또는 숫자를 반드시 포함해야 합니다.");
+            return false;
+        }
+
+        alert("유효한 비밀번호입니다.");
+        return true;
+    }
+
+    function chkEQ(){
+        var p1 = $("#getpwd").val();
+        var p2 = $("#checkpwd").val();
+        if( p1 != p2 ) {
+            alert("비밀번호가 일치 하지 않습니다");
+            return false;
+        } else{
+            alert("비밀번호가 일치합니다");
+            return true;
+        }
+    }
+</script>
+<script>
+    const modal = document.querySelector('.modal');
+    const btnOpenModal=document.querySelector('#signup-link');
+    const cancelModalBtn = document.querySelector('#cancelModalBtn');
+    btnOpenModal.addEventListener("click", ()=>{
+        modal.style.display="flex";
+    });
+
+    cancelModalBtn.addEventListener("click",()=>{
+        modal.style.display="none";
+    });
+</script>
+<script>
+    function passConfirm(){
+        alert("테스트 first")
+        var pass = document.getElementById('getpwd');
+        var checkpass = document.getElementById('checkpwd');
+        var correctColor = "#00ff00";	//맞았을 때 출력되는 색깔.
+        var wrongColor ="#ff0000";	//틀렸을 때 출력되는 색깔
+        var confirmMsg = document.getElementById('confirmMsg');
+        alert("테스트");
+        if(pass.value == checkpass.value){//password 변수의 값과 passwordConfirm 변수의 값과 동일하다.
+            confirmMsg.style.color = correctColor;/* span 태그의 ID(confirmMsg) 사용  */
+            confirmMsg.innerHTML ="비밀번호 일치";/* innerHTML : HTML 내부에 추가적인 내용을 넣을 때 사용하는 것. */
+        }else{
+            confirmMsg.style.color = wrongColor;
+            confirmMsg.innerHTML ="비밀번호 불일치";
+        }
+
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+    function Check(){
+        var erpId = $('#getid').val();
+        var sendData = {id : erpId};
+        console.log(erpId);
+        $.ajax({
+            type:'GET',
+            async: true,
+            url:"/loginCheckId",
+            data: sendData,
+            success: function (result){
+                console.log("AJAX 요청 성공: ", result.code);
+                if(result.code > 0){
+                    $("#olmessage").text("이미 사용중인 ID 입니다.");
+                    $("#olmessage").addClass("olmessagef")
+                    $("#olmessage").removeClass("olmessaget");
+                    console.log('사용중');
+                }else{
+                    $("#olmessage").text("사용 가능한 ID 입니다.");
+                    $("#olmessage").addClass("olmessaget")
+                    $("#olmessage").removeClass("olmessagef");
+                    console.log('사용가능');
+                }
+            },
+            error : function(error) {
+                console.log(result);
+                alert("error : " + error);
+            }
+        })
+        console.log("이부분 되냐?");
+    }
+
+</script>
+<script>
+function submitSignup(event){
+    event.preventDefault();
+
+    var formData = new FormData(document.getElementById('signupForm'));
+
+    fetch('/loginSignup', {
+        method:'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(result => {
+            if(result.status === 'success') {
+                alert(result.message);
+            document.querySelector('.modal').style.display='none';
+        } else {
+            alert(result.message);
+    }
+})
+.catch(error => {
+    console.log(error);
+    alert('회원가입 처리 중 오류가 발생했습니다.');
+});}
+</script>
+
+</html>

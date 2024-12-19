@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.practice.repository.IF_ProductDao">
+    <select id="selectAllProduct" resultType="com.example.practice.vo.ProductVO">
+        select t.*
+        from (select sub.*, rownum as rnum from (select * from ErpProduct order by num DESC) sub) t
+        where rnum between #{startNo} and #{endNo}
+    </select>
+
+    <select id="productCount" resultType="int">
+        select count(*)
+        from ERPPRODUCT
+    </select>
+
+    <!--    상품명(포함), 가격, 코드로 검색 -->
+    <select id="selectProduct" parameterType="map" resultType="com.example.practice.vo.ProductVO">
+        SELECT * FROM (
+        SELECT
+        a.*,
+        ROWNUM rnum
+        FROM (
+        SELECT * FROM ERPPRODUCT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test='productVO.product_name != null and productVO.product_name != ""'>
+                product_name LIKE concat('%', concat(#{productVO.product_name, jdbcType=VARCHAR}, '%'))
+            </if>
+            <if test='productVO.sale_price > 0 and productVO.sale_price != ""' >
+                AND sale_price = #{productVO.sale_price, jdbcType=NUMERIC}
+            </if>
+            <if test='productVO.category_code != null'>
+                AND category_code = #{productVO.category_code, jdbcType=VARCHAR}
+            </if>
+            ORDER BY num DESC
+            ) a
+            WHERE ROWNUM &lt;= #{productPageVO.endNo, jdbcType=INTEGER}
+            )
+            WHERE rnum &gt;= #{productPageVO.startNo, jdbcType=INTEGER}
+        </trim>
+    </select>
+
+    <select id="countSearchProduct" parameterType="com.example.practice.vo.ProductVO" resultType="int">
+        SELECT COUNT(*) FROM ERPPRODUCT
+        WHERE 1=1
+        <if test="product_name != null and product_name != ''">
+            AND product_name LIKE concat('%', concat(#{product_name, jdbcType=VARCHAR}, '%'))
+        </if>
+        <if test="sale_price != null">
+            AND sale_price = #{sale_price, jdbcType=NUMERIC}
+        </if>
+        <if test="category_code != null and category_code != ''">
+            AND category_code = #{category_code, jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--      category select // 전체 선택시, 전체도 적용하도록 함-->
+    <select id="selectCategory" parameterType="map" resultType="com.example.practice.vo.ProductVO">
+        SELECT t.*
+        FROM (
+        SELECT sub.*, ROWNUM as rnum
+        FROM (
+        SELECT *
+        FROM ERPPRODUCT
+        <where>
+            <if test='category_code != null and !category_code.isEmpty()'>
+                <choose>
+                    <when test='category_code == "all"'>
+                    </when>
+                    <when test='category_code == "other"'>
+                        CATEGORY_CODE NOT IN ('9999', '2222')
+                    </when>
+                    <otherwise>
+                        CATEGORY_CODE = #{category_code, jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY num DESC
+        ) sub
+        WHERE ROWNUM &lt;= #{productPageVO.endNo}
+        ) t
+        WHERE t.rnum &gt; #{productPageVO.startNo}
+    </select>
+
+    <delete id="deleteProduct" parameterType="java.util.List">
+        delete ERPPRODUCT where NUM in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateProduct" parameterType="com.example.practice.vo.ProductVO">
+        update ERPPRODUCT
+        set SALE_PRICE      = #{sale_price},
+            PRODUCT_CODE    = #{product_code},
+            PRODUCT_NAME    = #{product_name},
+            PRICE           = #{price},
+            CATEGORY_CODE   = #{category_code},
+            PRODUCT_EXPLAIN = #{product_explain},
+            COMPANY_CODE    = #{company_code},
+            PRODUCT_IMG     = #{product_img,jdbcType=VARCHAR}
+        where NUM = #{num}
+    </update>
+
+    <insert id="insertProduct" parameterType="com.example.practice.vo.ProductVO">
+        insert into ERPPRODUCT
+        values (pro_seq.nextval, #{product_code}, #{product_name}, #{sale_price}, #{price}, #{category_code}, #{product_img},
+                #{product_explain}, #{company_code})
+    </insert>
+    <select id="selectProductByNum" resultType="com.example.practice.vo.ProductVO">
+        SELECT * FROM ERPPRODUCT WHERE NUM = #{num}
+    </select>
+</mapper>

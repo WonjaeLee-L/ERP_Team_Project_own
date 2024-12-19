@@ -1,0 +1,32 @@
+#addProduct .modal-dialog {
+    max-width: 800px;
+}
+
+/* 초록색 테마 적용 */
+#addProduct .modal-header {
+    /*background-color: #4CAF50;*/
+    /*background-color: #4CAF50;*/
+    background-color: #c8e6c9;
+    color: white; /* 헤더 텍스트 흰색 */
+}
+
+#addProduct .modal-footer {
+    /*background-color: #e8f5e9;*/
+    /*background-color: #4CAF50;*/
+    background-color: #c8e6c9;
+}
+
+#addProduct .modalbtn {
+    background-color: #4CAF50; /* 초록색 버튼 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-align: center;
+    margin: 0 5px;
+}
+
+#addProduct .modalbtn:hover {
+    background-color: #45a049; /* 마우스 오버 시 버튼 색 */
+}

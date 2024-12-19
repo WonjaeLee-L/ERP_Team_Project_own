@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #9fc79f;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+.label_modal{
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.login-container {
+    background-color: #cfedcb;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+.login-container img {
+    width: 300px;
+    height: auto;
+    margin-bottom: -40px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: #335933;
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #335933;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn1{
+    width: 30%;
+    padding: 10px;
+    background-color: #ababab;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+
+}
+.btn:hover {
+    background-color: #335933;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.forgot-password {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #000;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+.extra-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.extra-links a {
+    display: block;
+    color: #000000;
+    text-decoration: none;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+}
+.modal{
+    position:absolute;
+    display: none;
+
+    justify-content: center;
+    top:0;
+    left:0;
+
+    background-color: #cfedcb;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    height: 600px;
+    text-align: left;
+}
+.modal input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.subMsg{
+    font-size: 0.8rem;
+    color: red;
+    display:block;
+}
+.olmessagef {font-size: 0.8rem; color: red;}
+.olmessaget {font-size: 0.8rem; color: blue;}

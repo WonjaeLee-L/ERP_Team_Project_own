@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.practice.repository.IF_LoginDao">
+
+    <select id="selectOne" parameterType="String" resultType="com.example.practice.vo.MemberVO">
+        SELECT * FROM ERPMEMBER WHERE ERPID = #{erpId}
+    </select>
+    <select id="findEmail" parameterType="String" resultType="String">
+        select ERPEMAIL from ERPMEMBER where ERPID = #{erpId}
+    </select>
+
+</mapper>

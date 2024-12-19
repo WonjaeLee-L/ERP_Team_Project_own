@@ -1,0 +1,257 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+header {
+    width: 100%;
+    height: 100px;
+    background-color: #99c89c;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 1px 1px 1px 1px #555555;
+    position: relative;
+    margin-bottom: 2px;
+}
+.welcome-message {
+    float: right;
+    margin-right: 20px;
+    font-size: 20px;
+}
+.main-container {
+    display: flex;
+    height: calc(100vh - 100px);
+    position: relative;
+}
+.logo{
+    text-align: center;
+    width: 200px;
+    height: 110%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+.logo img {
+    width: 180px;
+}
+footer{
+    width: 98.9%;
+    position: absolute;
+    bottom: 0;
+    height: 100px;
+    border: 1px solid;
+    text-align: center;
+    font-size: 50px;
+}
+nav {
+    width: 200px;
+    background-color: #99c89c;
+    box-shadow: 1px 1px 1px 1px #555555;
+    position: relative;
+    margin-top: 1px;
+}
+iframe {
+    width: 100%;
+    height: calc(100vh - 101px);
+    border: none;
+    margin-left: 1px;
+    display: block;
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+}
+.dropdown{
+    position : relative;
+    display : inline-block;
+}
+.dropbtn{
+    font-weight: 400;
+    color : rgb(37, 37, 37);
+    padding : 12px;
+    width :200px;
+    text-align: center;
+    cursor : pointer;
+    font-size : 18px;
+    background-color: #99c89c;
+    border: #8fc3a3 1px outset;
+
+}
+.dropdown-content{
+    display : none;
+    position : absolute;
+    font-weight: 400;
+    min-width : 200px;
+    background-color: #99c89c;
+    border: #8fc3a3 1px outset;
+    z-index: 1;
+}
+
+.dropdown-content a{
+    display : block;
+    text-decoration : none;
+    color : rgb(37, 37, 37);
+    font-size: 17px;
+    padding : 12px 20px;
+    text-align: center;
+    border: #8fc3a3 1px outset;
+}
+
+.dropdown-content a:hover{
+    background-color: #d0f0c0;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flow;
+}
+Section {
+    flex: 1;
+    border-left: none;
+    padding: 0;
+    position: relative;
+}
+.tabs {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+.tabs li {
+    padding: 10px;
+    background-color: #ddd;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.tabs li:hover {
+    background-color: #ccc;
+}
+
+.tab-content {
+    display: none;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 40px;  /* 패딩 증가 */
+    border: 1px solid #888;
+    width: 80%;  /* 전체 너비 증가 */
+    max-width: 900px;  /* 최대 너비 증가 */
+    border-radius: 5px;
+}
+#calVat {
+    margin-left: 10px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    background-color: lightgray;
+    border: none;
+}
+#calVat:hover {
+    background-color: darkgray;
+}
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: black;
+}
+
+.form-group {
+    margin-bottom: 20px;  /* 하단 여백 증가 */
+}
+
+.form-row {
+    display: flex;
+    gap: 30px;  /* 요소 간 간격 증가 */
+    margin-bottom: 20px;  /* 하단 여백 증가 */
+    padding: 0 20px;  /* 좌우 패딩 추가 */
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+    min-width: 200px;  /* 최소 너비 설정 */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;  /* 라벨 아래 여백 증가 */
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;  /* 입력 필드 내부 패딩 증가 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;  /* 폰트 크기 조정 */
+}
+
+.form-group input[type="number"] {
+    text-align: right;
+}
+
+.form-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-buttons button {
+    background-color: #99c89c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.form-buttons button:hover {
+    background-color: #7fb582;
+}
+
+.form-buttons button[type="button"] {
+    background-color: #808080;
+}
+/* 모달 내부 전체 여백 조정 */
+#slipForm {
+    padding: 20px;
+}
+/* 제목과 폼 사이 간격 조정 */
+.modal-content h2 {
+    margin-bottom: 30px;
+    padding-left: 20px;
+}
+.logout-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #335933;
+    color: white;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #A8D5BA;
+}
